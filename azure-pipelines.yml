@@ -26,3 +26,10 @@ steps:
     command: test
     projects: '**/*Test.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
+  inputs:
+    command: push
+    publishVstsFeed: 'AriseFeed'
+    allowPackageConflicts: true
