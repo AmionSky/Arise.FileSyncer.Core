@@ -17,7 +17,7 @@ steps:
   inputs:
     version: '3.0.100-preview-010184'
 
-- script:
+- script: |
     dotnet restore
     dotnet build --configuration $(buildConfiguration)
 
