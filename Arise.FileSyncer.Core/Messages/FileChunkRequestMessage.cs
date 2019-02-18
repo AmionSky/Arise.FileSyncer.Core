@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Arise.FileSyncer.Messages
+namespace Arise.FileSyncer.Core.Messages
 {
     internal class FileChunkRequestMessage : NetMessage
     {

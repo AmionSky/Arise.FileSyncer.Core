@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     internal enum NetMessageType : byte
     {

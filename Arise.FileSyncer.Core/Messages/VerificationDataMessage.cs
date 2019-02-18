@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Arise.FileSyncer.Helpers;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.Helpers;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer.Messages
+namespace Arise.FileSyncer.Core.Messages
 {
     internal class VerificationDataMessage : NetMessage
     {

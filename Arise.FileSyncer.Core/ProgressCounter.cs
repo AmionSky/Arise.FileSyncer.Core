@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public class ProgressCounter
     {

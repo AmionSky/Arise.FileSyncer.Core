@@ -1,6 +1,6 @@
 using System;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public static class Log
     {

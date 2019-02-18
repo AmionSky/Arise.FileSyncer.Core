@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using Arise.FileSyncer.Components;
-using Arise.FileSyncer.Messages;
+using Arise.FileSyncer.Core.Components;
+using Arise.FileSyncer.Core.Messages;
 
-namespace Arise.FileSyncer.FileSync
+namespace Arise.FileSyncer.Core.FileSync
 {
     internal class FileSender : IDisposable
     {

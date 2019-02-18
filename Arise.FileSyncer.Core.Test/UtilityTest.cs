@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Arise.FileSyncer.FileSync;
+using Arise.FileSyncer.Core.FileSync;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Arise.FileSyncer.Core.Test

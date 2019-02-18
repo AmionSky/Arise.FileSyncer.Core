@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Arise.FileSyncer.Components
+namespace Arise.FileSyncer.Core.Components
 {
     internal class QueueWorker<T> : IDisposable
     {

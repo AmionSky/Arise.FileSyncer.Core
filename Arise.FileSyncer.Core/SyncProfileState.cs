@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using Arise.FileSyncer.FileSync;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.FileSync;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     internal class SyncProfileState : IBinarySerializable
     {

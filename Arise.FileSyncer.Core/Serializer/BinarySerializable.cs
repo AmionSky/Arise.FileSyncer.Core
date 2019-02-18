@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Arise.FileSyncer.Serializer
+namespace Arise.FileSyncer.Core.Serializer
 {
     public interface IBinarySerializable
     {

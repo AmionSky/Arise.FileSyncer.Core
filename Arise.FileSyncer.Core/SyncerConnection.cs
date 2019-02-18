@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Arise.FileSyncer.Components;
-using Arise.FileSyncer.FileSync;
-using Arise.FileSyncer.Messages;
-using Arise.FileSyncer.Plugins;
+using Arise.FileSyncer.Core.Components;
+using Arise.FileSyncer.Core.FileSync;
+using Arise.FileSyncer.Core.Messages;
+using Arise.FileSyncer.Core.Plugins;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public interface ISyncerConnection
     {

@@ -1,7 +1,7 @@
 using System.IO;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer.Messages
+namespace Arise.FileSyncer.Core.Messages
 {
     internal class PairingRequestMessage : NetMessage
     {

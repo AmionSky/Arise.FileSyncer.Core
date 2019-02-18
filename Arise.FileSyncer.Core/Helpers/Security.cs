@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Arise.FileSyncer.Helpers
+namespace Arise.FileSyncer.Core.Helpers
 {
     public static class Security
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Arise.FileSyncer.FileSync
+namespace Arise.FileSyncer.Core.FileSync
 {
     public class FileSendInfo
     {

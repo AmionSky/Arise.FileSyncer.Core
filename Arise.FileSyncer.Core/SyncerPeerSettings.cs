@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public class SyncerPeerSettings
     {

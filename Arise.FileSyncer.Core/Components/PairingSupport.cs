@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Arise.FileSyncer.Components
+namespace Arise.FileSyncer.Core.Components
 {
     internal class PairingSupport
     {

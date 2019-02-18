@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Arise.FileSyncer.Helpers
+namespace Arise.FileSyncer.Core.Helpers
 {
     public static class Random
     {

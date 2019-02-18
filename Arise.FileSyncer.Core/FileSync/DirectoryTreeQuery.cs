@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Arise.FileSyncer.Helpers;
+using Arise.FileSyncer.Core.Helpers;
 
-namespace Arise.FileSyncer.FileSync
+namespace Arise.FileSyncer.Core.FileSync
 {
     internal static class DirectoryTreeQuery
     {

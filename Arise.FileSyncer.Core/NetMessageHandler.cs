@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Arise.FileSyncer.Components;
+using Arise.FileSyncer.Core.Components;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     internal class NetMessageHandler : IDisposable
     {

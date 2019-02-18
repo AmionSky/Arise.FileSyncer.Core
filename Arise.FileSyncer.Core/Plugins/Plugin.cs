@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Arise.FileSyncer.Plugins
+namespace Arise.FileSyncer.Core.Plugins
 {
     [Flags]
     public enum PluginFeatures : short

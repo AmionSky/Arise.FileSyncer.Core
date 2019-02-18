@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Threading;
-using Arise.FileSyncer.FileSync;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.FileSync;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public class SyncProfile : IBinarySerializable
     {

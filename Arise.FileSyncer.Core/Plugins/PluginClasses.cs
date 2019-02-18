@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Arise.FileSyncer.FileSync;
+using Arise.FileSyncer.Core.FileSync;
 
-namespace Arise.FileSyncer.Plugins
+namespace Arise.FileSyncer.Core.Plugins
 {
     public abstract partial class Plugin
     {

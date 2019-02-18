@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using Arise.FileSyncer.Serializer;
+using Arise.FileSyncer.Core.Serializer;
 
-namespace Arise.FileSyncer.FileSync
+namespace Arise.FileSyncer.Core.FileSync
 {
     public struct FileSystemItem : IBinarySerializable
     {

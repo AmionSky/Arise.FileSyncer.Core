@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Arise.FileSyncer.Plugins
+namespace Arise.FileSyncer.Core.Plugins
 {
     public class PluginManager
     {

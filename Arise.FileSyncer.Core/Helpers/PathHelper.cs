@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Arise.FileSyncer.Helpers
+namespace Arise.FileSyncer.Core.Helpers
 {
     public static class PathHelper
     {

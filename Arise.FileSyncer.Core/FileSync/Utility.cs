@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Arise.FileSyncer.FileSync
+namespace Arise.FileSyncer.Core.FileSync
 {
     public static class Utility
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Timers;
 
-namespace Arise.FileSyncer.Components
+namespace Arise.FileSyncer.Core.Components
 {
     internal class ProgressChecker : IDisposable
     {

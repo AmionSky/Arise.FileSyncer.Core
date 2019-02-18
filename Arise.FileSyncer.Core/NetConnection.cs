@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Arise.FileSyncer
+namespace Arise.FileSyncer.Core
 {
     public interface INetConnection : IDisposable
     {

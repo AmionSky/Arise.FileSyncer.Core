@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Arise.FileSyncer.Serializer
+namespace Arise.FileSyncer.Core.Serializer
 {
     public static class BinaryWriter
     {
