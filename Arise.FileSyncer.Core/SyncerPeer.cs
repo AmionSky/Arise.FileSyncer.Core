@@ -7,6 +7,9 @@ using Arise.FileSyncer.Core.Plugins;
 
 namespace Arise.FileSyncer.Core
 {
+    /// <summary>
+    /// Core of the syncer. Stores connections, profiles and handles communication.
+    /// </summary>
     public class SyncerPeer : IDisposable
     {
         /// <summary>
@@ -213,8 +216,8 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Tries getting a connection.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="connection"></param>
+        /// <param name="id">ID of the connection</param>
+        /// <param name="connection">The connection as a public interface</param>
         /// <returns></returns>
         public bool TryGetConnection(Guid id, out ISyncerConnection connection)
         {
@@ -226,7 +229,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Shares the specified profile with the given connection.
         /// </summary>
-        /// <param name="connectionId"></param>
+        /// <param name="connectionId">ID of the connection</param>
         /// <param name="profileId">ID of the profile to share</param>
         /// <returns></returns>
         public bool ShareProfile(Guid connectionId, Guid profileId)
@@ -244,6 +247,7 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         /// <param name="connectionId"></param>
         /// <param name="profileId">ID of the profile to sync</param>
+        /// <param name="isResponse">Is it a response message. Should always be false.</param>
         public bool SyncProfile(Guid connectionId, Guid profileId, bool isResponse = false)
         {
             if (!Settings.Profiles.TryGetValue(profileId, out var profile))
@@ -274,7 +278,9 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Adds a new profile to the peer settings.
         /// </summary>
-        /// <param name="newProfile"></param>
+        /// <param name="profileId">ID of the profile to add</param>
+        /// <param name="newProfile">The new profile</param>
+        /// <returns></returns>
         public bool AddProfile(Guid profileId, SyncProfile newProfile)
         {
             if (Settings.Profiles.TryAdd(profileId, newProfile))
@@ -305,6 +311,12 @@ namespace Arise.FileSyncer.Core
             return false;
         }
 
+        /// <summary>
+        /// Updates a selected profile
+        /// </summary>
+        /// <param name="profileId">ID of the profile to update</param>
+        /// <param name="newProfile">Updated profile</param>
+        /// <returns></returns>
         public bool UpdateProfile(Guid profileId, SyncProfile newProfile)
         {
             if (Settings.Profiles.TryGetValue(profileId, out var profile))
