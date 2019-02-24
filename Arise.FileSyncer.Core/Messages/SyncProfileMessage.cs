@@ -36,7 +36,10 @@ namespace Arise.FileSyncer.Core.Messages
 
             if (!isResponse)
             {
-                con.Owner.SyncProfile(con.GetRemoteDeviceId(), profileState.Id, true);
+                if (!con.Owner.SyncProfile(con.GetRemoteDeviceId(), profileState.Id, true))
+                {
+                    Log.Warning("Failed to send response SyncProfileMessage");
+                }
             }
         }
 
