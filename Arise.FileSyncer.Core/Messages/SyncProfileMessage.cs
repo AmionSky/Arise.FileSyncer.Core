@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Arise.FileSyncer.Core.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
@@ -6,6 +6,7 @@ namespace Arise.FileSyncer.Core.Messages
     internal class SyncProfileMessage : NetMessage
     {
         private SyncProfileState profileState;
+        private bool isResponse;
 
         public override NetMessageType MessageType => NetMessageType.SyncProfile;
 
@@ -14,6 +15,13 @@ namespace Arise.FileSyncer.Core.Messages
         public SyncProfileMessage(SyncProfileState profileState)
         {
             this.profileState = profileState;
+            isResponse = false;
+        }
+
+        public SyncProfileMessage(SyncProfileState profileState, bool isResponse)
+        {
+            this.profileState = profileState;
+            this.isResponse = isResponse;
         }
 
         public override void Process(SyncerConnection con)
@@ -26,7 +34,7 @@ namespace Arise.FileSyncer.Core.Messages
                 con.StartProfileSync(profileState);
             }
 
-            if (!profileState.IsResponse)
+            if (!isResponse)
             {
                 con.Owner.SyncProfile(con.GetRemoteDeviceId(), profileState.Id, true);
             }
@@ -35,11 +43,13 @@ namespace Arise.FileSyncer.Core.Messages
         public override void Deserialize(Stream stream)
         {
             profileState = stream.Read<SyncProfileState>();
+            isResponse = stream.ReadBoolean();
         }
 
         public override void Serialize(Stream stream)
         {
             stream.Write(profileState);
+            stream.Write(isResponse);
         }
     }
 }

@@ -12,8 +12,6 @@ namespace Arise.FileSyncer.Core
         public bool AllowDelete;
         public FileSystemItem[] State;
 
-        public bool IsResponse = false;
-
         public SyncProfileState() { }
 
         public SyncProfileState(Guid id, Guid key, bool allowDelete, FileSystemItem[] state)
@@ -38,8 +36,6 @@ namespace Arise.FileSyncer.Core
             {
                 State = null;
             }
-
-            IsResponse = stream.ReadBoolean();
         }
 
         public void Serialize(Stream stream)
@@ -57,8 +53,6 @@ namespace Arise.FileSyncer.Core
             {
                 stream.Write(false);
             }
-
-            stream.Write(IsResponse);
         }
 
         public static SyncProfileState Create(Guid id, SyncProfile profile)

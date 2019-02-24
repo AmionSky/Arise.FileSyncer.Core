@@ -252,8 +252,7 @@ namespace Arise.FileSyncer.Core
                 {
                     if (SyncProfileState.Create(profileId, profile) is SyncProfileState profileState)
                     {
-                        profileState.IsResponse = isResponse;
-                        return TrySend(connectionId, new SyncProfileMessage(profileState));
+                        return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
                     }
                     else
                     {
@@ -262,12 +261,8 @@ namespace Arise.FileSyncer.Core
                 }
                 else if (profile.AllowSend)
                 {
-                    var profileState = new SyncProfileState(profileId, profile.Key, profile.AllowDelete, null)
-                    {
-                        IsResponse = isResponse
-                    };
-
-                    return TrySend(connectionId, new SyncProfileMessage(profileState));
+                    var profileState = new SyncProfileState(profileId, profile.Key, profile.AllowDelete, null);
+                    return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
                 }
             }
 
