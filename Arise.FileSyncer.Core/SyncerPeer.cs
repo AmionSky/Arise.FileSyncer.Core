@@ -246,27 +246,29 @@ namespace Arise.FileSyncer.Core
         /// <param name="profileId">ID of the profile to sync</param>
         public bool SyncProfile(Guid connectionId, Guid profileId, bool isResponse = false)
         {
-            if (Settings.Profiles.TryGetValue(profileId, out var profile))
+            if (!Settings.Profiles.TryGetValue(profileId, out var profile))
             {
-                if (profile.AllowReceive)
-                {
-                    if (SyncProfileState.Create(profileId, profile) is SyncProfileState profileState)
-                    {
-                        return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
-                    }
-                    else
-                    {
-                        OnProfileError(new ProfileErrorEventArgs(profileId, profile, SyncProfileError.FailedToGetState));
-                    }
-                }
-                else if (profile.AllowSend)
-                {
-                    var profileState = new SyncProfileState(profileId, profile.Key, profile.AllowDelete, null);
-                    return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
-                }
+                return false;
             }
 
-            return false;
+            SyncProfileState profileState;
+
+            if (profile.AllowReceive)
+            {
+                profileState = SyncProfileState.Create(profileId, profile);
+
+                if (profileState == null)
+                {
+                    OnProfileError(new ProfileErrorEventArgs(profileId, profile, SyncProfileError.FailedToGetState));
+                    return false;
+                }
+            }
+            else
+            {
+                profileState = new SyncProfileState(profileId, profile.Key, profile.AllowDelete, null);
+            }
+
+            return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
         }
 
         /// <summary>
