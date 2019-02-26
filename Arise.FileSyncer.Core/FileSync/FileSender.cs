@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -83,16 +83,12 @@ namespace Arise.FileSyncer.Core.FileSync
             bool hadError = false;
 
 
-            string pathRelative = "";
-            string pathRoot = "";
+            string pathRelative = sendInfo.RelativePath;
+            string pathRoot = sendInfo.RootPath;
 
-            if (pathRelative.StartsWith(sendInfo.RootPath))
+            if (!string.Equals(Path.Combine(pathRoot, pathRelative), sendInfo.File.FullName, StringComparison.Ordinal))
             {
-                pathRelative = sendInfo.RelativePath;
-                pathRoot = sendInfo.RootPath;
-            }
-            else
-            {
+                pathRoot = string.Empty;
                 pathRelative = sendInfo.File.FullName;
             }
 
