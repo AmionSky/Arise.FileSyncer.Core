@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -231,17 +231,6 @@ namespace Arise.FileSyncer.Core.FileSync
                 return;
             }
 
-            if (!message.Success)
-            {
-                Log.Info($"{this}: Remote error in file send");
-
-                if (owner.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection connection))
-                {
-                    connection.Progress.RemoveProgress(fileInfo.WrittenSize);
-                    connection.Progress.RemoveMaximum(fileInfo.FileSize);
-                }
-            }
-
             //Close and flush the writer stream if it's still open
             if (WriterFileId == message.FileId)
             {
@@ -253,35 +242,52 @@ namespace Arise.FileSyncer.Core.FileSync
             string pathReal = Path.Combine(fileInfo.RootPath, fileInfo.RelativePath);
             string relativeTempPath = fileInfo.RelativePath + TemporaryFileExtension;
 
-            //Delete existing file at pathReal
-            Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath);
-
-            //Rename from the temp file to the real file
-            if (Utility.FileRename(fileInfo.ProfileId, fileInfo.RootPath, relativeTempPath, Path.GetFileName(fileInfo.RelativePath)))
+            // Check success
+            if (!message.Success)
             {
-                //If the rename was successful -> Set file times if it supports timestamps
-                if (!SyncerPeer.SupportTimestamp ||
-                    Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
+                Log.Info($"{this}: Remote error in file send");
+
+                if (owner.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection connection))
                 {
-                    //If the info update was successful
-                    if (owner.Settings.Profiles.TryGetValue(fileInfo.ProfileId, out var profile))
-                    {
-                        profile.LastSyncDate = DateTime.Now;
-                        owner.OnProfileChanged(new ProfileEventArgs(fileInfo.ProfileId, profile));
-                    }
-                    else
-                    {
-                        Log.Warning($"{this}: Profile does not exist: {fileInfo.ProfileId}");
-                    }
+                    connection.Progress.RemoveProgress(fileInfo.WrittenSize);
+                    connection.Progress.RemoveMaximum(fileInfo.FileSize);
                 }
-                else Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
+
+                //Delete temp file
+                Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
             }
             else
             {
-                //Remove temp file if move/rename failed
-                Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+                //Delete existing file at pathReal
+                Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath);
 
-                Log.Warning($"{this}: Failed to rename: {fileInfo.RelativePath}");
+                //Rename from the temp file to the real file
+                if (Utility.FileRename(fileInfo.ProfileId, fileInfo.RootPath, relativeTempPath, Path.GetFileName(fileInfo.RelativePath)))
+                {
+                    //If the rename was successful -> Set file times if it supports timestamps
+                    if (!SyncerPeer.SupportTimestamp ||
+                        Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
+                    {
+                        //If the info update was successful
+                        if (owner.Settings.Profiles.TryGetValue(fileInfo.ProfileId, out var profile))
+                        {
+                            profile.LastSyncDate = DateTime.Now;
+                            owner.OnProfileChanged(new ProfileEventArgs(fileInfo.ProfileId, profile));
+                        }
+                        else
+                        {
+                            Log.Warning($"{this}: Profile does not exist: {fileInfo.ProfileId}");
+                        }
+                    }
+                    else Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
+                }
+                else
+                {
+                    //Remove temp file if move/rename failed
+                    Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+
+                    Log.Warning($"{this}: Failed to rename: {fileInfo.RelativePath}");
+                }
             }
 
             fileInfos.TryRemove(message.FileId, out var _);
