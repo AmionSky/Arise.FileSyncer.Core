@@ -213,6 +213,9 @@ namespace Arise.FileSyncer.Core
             // Send
             Send(new CreateDirectoriesMessage(remoteProfile.Id, localProfile, directories));
             fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, filesRelative, filesAbsolute));
+
+            // Update last sync date
+            localProfile.LastSyncDate = DateTime.Now;
         }
 
         private void ProgressCheckFailed()
