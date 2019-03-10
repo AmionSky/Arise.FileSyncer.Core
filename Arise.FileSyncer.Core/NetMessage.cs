@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -29,6 +29,8 @@ namespace Arise.FileSyncer.Core
 
         SyncInitFinished = 13,
         SyncProfile = 14,
+
+        IsAlive = 15,
     }
 
     internal abstract class NetMessage : IBinarySerializable

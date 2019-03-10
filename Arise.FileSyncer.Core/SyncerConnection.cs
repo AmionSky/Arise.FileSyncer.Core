@@ -53,6 +53,7 @@ namespace Arise.FileSyncer.Core
         private readonly Lazy<FileSender> fileSender;
         private readonly NetMessageHandler messageHandler;
         private readonly ProgressChecker progressChecker;
+        private readonly ConnectionChecker connectionChecker;
 
         public SyncerConnection(SyncerPeer owner, INetConnection connection)
         {
@@ -63,6 +64,7 @@ namespace Arise.FileSyncer.Core
             fileSender = new Lazy<FileSender>(() => new FileSender(this));
             messageHandler = new NetMessageHandler(connection, MessageReceived, Disconnect);
             progressChecker = new ProgressChecker(Progress, ProgressCheckFailed);
+            connectionChecker = new ConnectionChecker(messageHandler.Send);
         }
 
         public void Start()
@@ -235,6 +237,7 @@ namespace Arise.FileSyncer.Core
             return message != null
                 && (Verified
                     || message.MessageType == NetMessageType.VerificationData
+                    || message.MessageType == NetMessageType.IsAlive
                     || message.MessageType == NetMessageType.PairingRequest
                     || message.MessageType == NetMessageType.PairingResponse
                 );
