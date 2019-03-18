@@ -101,7 +101,7 @@ namespace Arise.FileSyncer.Core
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"{this}: Receive Exception: " + ex.Message);
+                        Log.Warning($"{this}: Receive Exception: " + ex.Message);
                         disconnect();
                         break;
                     }
@@ -122,7 +122,7 @@ namespace Arise.FileSyncer.Core
             }
             catch (Exception ex)
             {
-                Log.Error($"{this}: Send Exception: " + ex.Message);
+                Log.Warning($"{this}: Send Exception: " + ex.Message);
                 disconnect();
             }
         }
