@@ -61,6 +61,12 @@ namespace Arise.FileSyncer.Core
             return new SyncProfile(creator);
         }
 
+        public void UpdateLastSyncDate(SyncerPeer peer, Guid id)
+        {
+            LastSyncDate = DateTime.Now;
+            peer.OnProfileChanged(new ProfileEventArgs(id, this));
+        }
+
         internal bool GenerateState(out FileSystemItem[] state)
         {
             return DirectoryTreeQuery.GenerateTree(out state, RootDirectory, SkipHidden, FileBuilder.TemporaryFileExtension);

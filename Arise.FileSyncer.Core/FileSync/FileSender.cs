@@ -132,8 +132,7 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 if (owner.Owner.Settings.Profiles.TryGetValue(sendInfo.ProfileId, out var profile))
                 {
-                    profile.LastSyncDate = DateTime.Now;
-                    owner.Owner.OnProfileChanged(new ProfileEventArgs(sendInfo.ProfileId, profile));
+                    profile.UpdateLastSyncDate(owner.Owner, sendInfo.ProfileId);
                 }
                 else
                 {
