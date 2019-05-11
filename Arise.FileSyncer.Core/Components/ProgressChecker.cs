@@ -6,14 +6,14 @@ namespace Arise.FileSyncer.Core.Components
     internal class ProgressChecker : IDisposable
     {
         private readonly Timer checkerTimer;
-        private readonly Action failed;
+        private readonly Action onTimeout;
         private readonly ProgressCounter counter;
         private double lastProgress = -1.0;
 
-        public ProgressChecker(ProgressCounter counter, Action failed, int interval)
+        public ProgressChecker(ProgressCounter counter, Action onTimeout, int interval)
         {
             this.counter = counter;
-            this.failed = failed;
+            this.onTimeout = onTimeout;
 
             checkerTimer = new Timer();
             checkerTimer.Elapsed += CheckerTimer_Elapsed;
@@ -45,7 +45,7 @@ namespace Arise.FileSyncer.Core.Components
 
         private void CheckerTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (!Check()) failed();
+            if (!Check()) onTimeout();
         }
 
         #region IDisposable Support

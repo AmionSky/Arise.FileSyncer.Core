@@ -63,7 +63,7 @@ namespace Arise.FileSyncer.Core
             pairingSupport = new Lazy<PairingSupport>();
             fileSender = new Lazy<FileSender>(() => new FileSender(this));
             messageHandler = new NetMessageHandler(connection, MessageReceived, Disconnect);
-            progressChecker = new ProgressChecker(Progress, ProgressCheckFailed, Owner.Settings.ProgressTimeout);
+            progressChecker = new ProgressChecker(Progress, ProgressTimeout, Owner.Settings.ProgressTimeout);
             connectionChecker = new ConnectionChecker(messageHandler.Send, Owner.Settings.PingInterval);
         }
 
@@ -220,7 +220,7 @@ namespace Arise.FileSyncer.Core
             localProfile.UpdateLastSyncDate(Owner, remoteProfile.Id);
         }
 
-        private void ProgressCheckFailed()
+        private void ProgressTimeout()
         {
             Log.Info($"{DisplayName}: Sync progress timeout. Disconnecting...");
             Disconnect();
