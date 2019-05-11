@@ -47,7 +47,7 @@ namespace Arise.FileSyncer.Core
             DeviceKeys = new ConcurrentDictionary<Guid, Guid>(1, 0);
             Profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
             BufferSize = 4096;
-            ChunkRequestCount = 8;
+            ChunkRequestCount = 16;
         }
     }
 }
