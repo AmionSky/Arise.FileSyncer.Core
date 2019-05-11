@@ -13,21 +13,21 @@ namespace Arise.FileSyncer.Core
 
     public static class SyncProgress
     {
-        public static double GetPercent(this ISyncProgress syncProgress)
+        public static double GetPercent(this ISyncProgress progress)
         {
-            long current = syncProgress.Current;
-            long maximum = syncProgress.Maximum;
+            long current = progress.Current;
+            long maximum = progress.Maximum;
 
-            if (current < 0 || maximum < 0 || current > maximum)
-            {
-                Log.Error("ProgressCounter GetPercent() error!");
-                return 0.0;
-            }
-
+            if (current <= 0 || maximum < 0 || current > maximum) return 0.0;
             if (maximum == 0) return 1.0;
-            if (current == 0) return 0.0;
 
             return current / (double)maximum;
+        }
+
+        public static long GetRemaining(this ISyncProgress progress)
+        {
+            long remaining = progress.Maximum - progress.Current;
+            return remaining < 0 ? 0 : remaining;
         }
     }
 }

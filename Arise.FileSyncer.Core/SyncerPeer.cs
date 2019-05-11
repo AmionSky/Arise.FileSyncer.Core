@@ -192,28 +192,6 @@ namespace Arise.FileSyncer.Core
         }
 
         /// <summary>
-        /// Returns the combined progress of all connections
-        /// </summary>
-        /// <returns></returns>
-        public ProgressCounter GetGlobalProgress()
-        {
-            var counter = new ProgressCounter();
-
-            foreach (var connectionKV in connections)
-            {
-                var connectionProgress = connectionKV.Value.Progress;
-                if (!connectionProgress.Indeterminate)
-                {
-                    counter.Indeterminate = false;
-                    counter.AddMaximum(connectionProgress.Maximum);
-                    counter.AddProgress(connectionProgress.Current);
-                }
-            }
-
-            return counter;
-        }
-
-        /// <summary>
         /// Tries getting a connection.
         /// </summary>
         /// <param name="id">ID of the connection</param>
