@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 
 namespace Arise.FileSyncer.Core
@@ -28,12 +28,12 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Size of the file send buffer.
         /// </summary>
-        public int BufferSize { get; }
+        public int BufferSize { get; set; }
 
         /// <summary>
         /// The maximum number of file chunks in the builder queue.
         /// </summary>
-        public int ChunkRequestCount { get; }
+        public int ChunkRequestCount { get; set; }
 
         /// <summary>
         /// Creates a new instance with generic default values.
