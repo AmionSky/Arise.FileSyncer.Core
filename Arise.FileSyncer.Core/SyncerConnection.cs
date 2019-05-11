@@ -254,6 +254,7 @@ namespace Arise.FileSyncer.Core
                 {
                     messageHandler.Dispose();
                     progressChecker.Dispose();
+                    connectionChecker.Dispose();
 
                     if (fileSender.IsValueCreated)
                     {
