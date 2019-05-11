@@ -1,8 +1,8 @@
-﻿using System.Threading;
+using System.Threading;
 
 namespace Arise.FileSyncer.Core
 {
-    public class ProgressCounter
+    public class ProgressCounter : ISyncProgress
     {
         public bool Indeterminate { get => indeterminate; internal set => indeterminate = value; }
         public long Current => Interlocked.Read(ref currentValue);
@@ -11,23 +11,6 @@ namespace Arise.FileSyncer.Core
         private volatile bool indeterminate = true;
         private long currentValue = 0;
         private long maximumValue = 0;
-
-        public double GetPercent()
-        {
-            long current = Current;
-            long maximum = Maximum;
-
-            if (current < 0 || maximum < 0 || current > maximum)
-            {
-                Log.Error("ProgressCounter GetPercent() error!");
-                return 0.0;
-            }
-
-            if (maximum == 0) return 1.0;
-            if (current == 0) return 0.0;
-
-            return current / (double)maximum;
-        }
 
         internal void AddProgress(long amount)
         {
