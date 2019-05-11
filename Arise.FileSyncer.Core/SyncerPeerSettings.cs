@@ -36,6 +36,16 @@ namespace Arise.FileSyncer.Core
         public int ChunkRequestCount { get; set; }
 
         /// <summary>
+        /// The time in milliseconds the connection should check if progress was made.
+        /// </summary>
+        public int ProgressTimeout { get; set; }
+
+        /// <summary>
+        /// The time in milliseconds the connection should ping the remote if it's alive.
+        /// </summary>
+        public int PingInterval { get; set; }
+
+        /// <summary>
         /// Creates a new instance with generic default values.
         /// </summary>
         public SyncerPeerSettings() : this(Guid.Empty, string.Empty) { }
@@ -48,6 +58,8 @@ namespace Arise.FileSyncer.Core
             Profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
             BufferSize = 4096;
             ChunkRequestCount = 16;
+            ProgressTimeout = 61000;
+            PingInterval = 61000;
         }
     }
 }

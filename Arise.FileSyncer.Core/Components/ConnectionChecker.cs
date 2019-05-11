@@ -9,13 +9,13 @@ namespace Arise.FileSyncer.Core.Components
         private readonly Action<NetMessage> send;
         private readonly Timer checkerTimer;
 
-        public ConnectionChecker(Action<NetMessage> send)
+        public ConnectionChecker(Action<NetMessage> send, int interval)
         {
             this.send = send;
 
             checkerTimer = new Timer();
             checkerTimer.Elapsed += CheckerTimer_Elapsed;
-            checkerTimer.Interval = 60000; // 1 minute
+            checkerTimer.Interval = interval;
             checkerTimer.AutoReset = true;
             checkerTimer.Start();
         }

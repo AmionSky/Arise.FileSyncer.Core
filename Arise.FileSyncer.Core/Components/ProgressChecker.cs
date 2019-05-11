@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Timers;
 
 namespace Arise.FileSyncer.Core.Components
@@ -10,14 +10,14 @@ namespace Arise.FileSyncer.Core.Components
         private readonly ProgressCounter counter;
         private double lastProgress = -1.0;
 
-        public ProgressChecker(ProgressCounter counter, Action failed)
+        public ProgressChecker(ProgressCounter counter, Action failed, int interval)
         {
             this.counter = counter;
             this.failed = failed;
 
             checkerTimer = new Timer();
             checkerTimer.Elapsed += CheckerTimer_Elapsed;
-            checkerTimer.Interval = 180000; // 3 minute
+            checkerTimer.Interval = interval;
             checkerTimer.AutoReset = true;
             checkerTimer.Start();
         }

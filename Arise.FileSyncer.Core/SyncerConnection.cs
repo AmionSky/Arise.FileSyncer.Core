@@ -63,8 +63,8 @@ namespace Arise.FileSyncer.Core
             pairingSupport = new Lazy<PairingSupport>();
             fileSender = new Lazy<FileSender>(() => new FileSender(this));
             messageHandler = new NetMessageHandler(connection, MessageReceived, Disconnect);
-            progressChecker = new ProgressChecker(Progress, ProgressCheckFailed);
-            connectionChecker = new ConnectionChecker(messageHandler.Send);
+            progressChecker = new ProgressChecker(Progress, ProgressCheckFailed, Owner.Settings.ProgressTimeout);
+            connectionChecker = new ConnectionChecker(messageHandler.Send, Owner.Settings.PingInterval);
         }
 
         public void Start()
