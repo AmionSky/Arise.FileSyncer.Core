@@ -3,6 +3,10 @@ using System.Timers;
 
 namespace Arise.FileSyncer.Core.Components
 {
+    /// <summary>
+    /// Periodically checks the progress of the connection.
+    /// Issues a timeout if no progress was made between 2 checks.
+    /// </summary>
     internal class ProgressChecker : IDisposable
     {
         private readonly Timer checkerTimer;

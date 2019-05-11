@@ -4,6 +4,9 @@ using Arise.FileSyncer.Core.Messages;
 
 namespace Arise.FileSyncer.Core.Components
 {
+    /// <summary>
+    /// Periodically sends a message to check if the connection is still alive.
+    /// </summary>
     class ConnectionChecker : IDisposable
     {
         private readonly Action<NetMessage> send;
