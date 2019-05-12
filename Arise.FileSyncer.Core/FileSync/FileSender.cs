@@ -9,9 +9,9 @@ namespace Arise.FileSyncer.Core.FileSync
 {
     internal class FileSender : IDisposable
     {
-        private SyncerConnection owner;
+        private readonly SyncerConnection owner;
 
-        private QueueWorker<FileSendInfo> sender;
+        private readonly QueueWorker<FileSendInfo> sender;
         private AutoResetEvent chunkRequestEvent;
         private volatile int chunkCount;
 

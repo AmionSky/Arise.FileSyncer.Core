@@ -32,10 +32,10 @@ namespace Arise.FileSyncer.Core.FileSync
 
         public const string TemporaryFileExtension = ".synctmp";
 
-        private SyncerPeer owner;
+        private readonly SyncerPeer owner;
 
-        private QueueWorker<FileMessageBase> builder;
-        private ConcurrentDictionary<Guid, BuilderFileInfo> fileInfos;
+        private readonly QueueWorker<FileMessageBase> builder;
+        private readonly ConcurrentDictionary<Guid, BuilderFileInfo> fileInfos;
 
         private Stream writerStream = null;
         private Guid WriterFileId
