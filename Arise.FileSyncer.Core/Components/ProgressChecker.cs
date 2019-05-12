@@ -1,5 +1,5 @@
 using System;
-using System.Timers;
+using System.Threading;
 
 namespace Arise.FileSyncer.Core.Components
 {
@@ -19,11 +19,7 @@ namespace Arise.FileSyncer.Core.Components
             this.counter = counter;
             this.onTimeout = onTimeout;
 
-            checkerTimer = new Timer();
-            checkerTimer.Elapsed += CheckerTimer_Elapsed;
-            checkerTimer.Interval = interval;
-            checkerTimer.AutoReset = true;
-            checkerTimer.Start();
+            checkerTimer = new Timer(CheckerCallback, this, interval, interval);
         }
 
         /// <summary>
@@ -47,9 +43,10 @@ namespace Arise.FileSyncer.Core.Components
             return true;
         }
 
-        private void CheckerTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private static void CheckerCallback(object state)
         {
-            if (!Check()) onTimeout();
+            var checker = (ProgressChecker)state;
+            if (!checker.Check()) checker.onTimeout();
         }
 
         #region IDisposable Support

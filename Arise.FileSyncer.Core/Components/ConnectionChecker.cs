@@ -1,5 +1,5 @@
 using System;
-using System.Timers;
+using System.Threading;
 using Arise.FileSyncer.Core.Messages;
 
 namespace Arise.FileSyncer.Core.Components
@@ -9,23 +9,16 @@ namespace Arise.FileSyncer.Core.Components
     /// </summary>
     class ConnectionChecker : IDisposable
     {
-        private readonly Action<NetMessage> send;
         private readonly Timer checkerTimer;
 
         public ConnectionChecker(Action<NetMessage> send, int interval)
         {
-            this.send = send;
-
-            checkerTimer = new Timer();
-            checkerTimer.Elapsed += CheckerTimer_Elapsed;
-            checkerTimer.Interval = interval;
-            checkerTimer.AutoReset = true;
-            checkerTimer.Start();
+            checkerTimer = new Timer(CheckerCallback, send, interval, interval);
         }
 
-        private void CheckerTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private static void CheckerCallback(object send)
         {
-            send(new IsAliveMessage());
+            ((Action<NetMessage>)send)(new IsAliveMessage());
         }
 
         #region IDisposable Support
