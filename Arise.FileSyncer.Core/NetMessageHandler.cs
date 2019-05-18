@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+
 using System.Threading.Tasks;
 using Arise.FileSyncer.Core.Components;
 
@@ -10,9 +11,8 @@ namespace Arise.FileSyncer.Core
         public readonly INetConnection Connection;
 
         private readonly Action disconnect;
-
-        private readonly QueueWorker<NetMessage> sender;
-        private readonly QueueWorker<NetMessage> processor;
+        private readonly Action<NetMessage> messageReceived;
+        private readonly ChannelWorker<NetMessage> sender;
 
         private Task receiverTask = null;
         private bool exitReceiver = true;
@@ -22,9 +22,9 @@ namespace Arise.FileSyncer.Core
         {
             Connection = connection;
             this.disconnect = disconnect;
+            this.messageReceived = messageReceived;
 
-            sender = new QueueWorker<NetMessage>(SenderTask);
-            processor = new QueueWorker<NetMessage>(messageReceived);
+            sender = new ChannelWorker<NetMessage>(false, SenderTask);
         }
 
         public void Start()
@@ -34,9 +34,6 @@ namespace Arise.FileSyncer.Core
                 Log.Error($"{this}: Tried to start a disposed message handler");
                 return;
             }
-
-            processor.Start();
-            sender.Start();
 
             if (receiverTask == null)
             {
@@ -48,13 +45,12 @@ namespace Arise.FileSyncer.Core
         public void Stop()
         {
             exitReceiver = true;
-            processor.Stop();
-            sender.Stop();
+            sender.Complete();
         }
 
         public void Send(NetMessage message)
         {
-            sender.Enqueue(message, true);
+            sender.Write(message);
         }
 
         public void SendAndDisconnect(NetMessage message)
@@ -62,7 +58,7 @@ namespace Arise.FileSyncer.Core
             try
             {
                 // Stop sender worker
-                sender.Stop();
+                sender.Complete();
                 sender.Wait(TimeSpan.FromSeconds(3));
 
                 // Send message synchronously
@@ -97,11 +93,13 @@ namespace Arise.FileSyncer.Core
                         NetMessage message = NetMessageFactory.Create(messageType);
 
                         message.Deserialize(stream);
-                        processor.Enqueue(message, true);
+
+                        // Call the message processing method
+                        messageReceived(message);
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"{this}: Receive Exception: " + ex.Message);
+                        Log.Verbose($"{this}: Receive Exception: " + ex.Message);
                         disconnect();
                         break;
                     }
@@ -143,10 +141,7 @@ namespace Arise.FileSyncer.Core
                 if (disposing)
                 {
                     exitReceiver = true;
-
-                    processor.Dispose();
-                    sender.Dispose();
-
+                    sender.Complete();
                     Connection.Dispose();
                 }
             }

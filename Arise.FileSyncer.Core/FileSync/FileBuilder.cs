@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Arise.FileSyncer.Core.Components;
 using Arise.FileSyncer.Core.Helpers;
 using Arise.FileSyncer.Core.Messages;
@@ -34,7 +35,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private readonly SyncerPeer owner;
 
-        private readonly QueueWorker<FileMessageBase> builder;
+        private readonly ChannelWorker<FileMessageBase> builder;
         private readonly ConcurrentDictionary<Guid, BuilderFileInfo> fileInfos;
 
         private Stream writerStream = null;
@@ -57,6 +58,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
         }
 
+        private int builderLength = 0;
         private Guid _writerFileId = Guid.Empty;
         private readonly object _writerFileIdLock = new object();
         private bool disposed = false;
@@ -65,22 +67,23 @@ namespace Arise.FileSyncer.Core.FileSync
         {
             this.owner = owner;
 
-            builder = new QueueWorker<FileMessageBase>(FileBuilderTask);
-            fileInfos = new ConcurrentDictionary<Guid, BuilderFileInfo>();
+            builder = new ChannelWorker<FileMessageBase>(true, FileBuilderTask);
+            fileInfos = new ConcurrentDictionary<Guid, BuilderFileInfo>(1, 4);
 
             owner.ConnectionRemoved += Owner_ConnectionRemoved;
-
-            builder.Start();
         }
 
         public void MessageToQueue(FileMessageBase message)
         {
-            builder.Enqueue(message, true);
+            if (builder.Write(message))
+            {
+                Interlocked.Increment(ref builderLength);
+            }
         }
 
         public bool IsBuildQueueEmpty()
         {
-            return builder.IsEmpty;
+            return builderLength == 0;
         }
 
         private void ResetStream()
@@ -131,6 +134,8 @@ namespace Arise.FileSyncer.Core.FileSync
                     Log.Error($"{this}: Invalid NetMessageType");
                     break;
             }
+
+            Interlocked.Decrement(ref builderLength);
         }
 
         private void Case_FileDataChunk(FileDataMessage message)
@@ -308,7 +313,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
                 if (disposing)
                 {
-                    builder.Dispose();
+                    builder.Complete();
 
                     if (writerStream != null)
                     {

@@ -11,19 +11,18 @@ namespace Arise.FileSyncer.Core.FileSync
     {
         private readonly SyncerConnection owner;
 
-        private readonly QueueWorker<FileSendInfo> sender;
+        private readonly ChannelWorker<FileSendInfo> sender;
         private AutoResetEvent chunkRequestEvent;
-        private volatile int chunkCount;
+        private int chunkCount;
+        private int senderLength = 0;
 
         public FileSender(SyncerConnection owner)
         {
             this.owner = owner;
 
-            sender = new QueueWorker<FileSendInfo>(SendFileByChunks);
+            sender = new ChannelWorker<FileSendInfo>(true, SendFileByChunks);
             chunkRequestEvent = new AutoResetEvent(false);
             chunkCount = owner.Owner.Settings.ChunkRequestCount;
-
-            sender.Start();
         }
 
         public void AddFiles(IList<FileSendInfo> sendInfos)
@@ -34,18 +33,17 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 overallSize += sendInfo.File.Length;
                 owner.Progress.AddMaximum(sendInfo.File.Length);
-                sender.Enqueue(sendInfo, false);
+                Enqueue(sendInfo);
             }
 
             owner.Send(new FileSizeMessage(overallSize));
-            sender.Signal();
         }
 
         public void AddFile(FileSendInfo sendInfo)
         {
             owner.Send(new FileSizeMessage(sendInfo.File.Length));
             owner.Progress.AddMaximum(sendInfo.File.Length);
-            sender.Enqueue(sendInfo, true);
+            Enqueue(sendInfo);
         }
 
         public void ChunkRequest()
@@ -56,7 +54,15 @@ namespace Arise.FileSyncer.Core.FileSync
 
         public bool IsSendQueueEmpty()
         {
-            return sender.IsEmpty;
+            return senderLength == 0;
+        }
+
+        private void Enqueue(FileSendInfo sendInfo)
+        {
+            if (sender.Write(sendInfo))
+            {
+                Interlocked.Increment(ref senderLength);
+            }
         }
 
         private void SendFileByChunks(FileSendInfo sendInfo)
@@ -105,7 +111,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 {
                     //Checks
                     if (chunkCount <= 0) chunkRequestEvent?.WaitOne();
-                    if (sender.Exiting) hadError = true;
+                    if (disposed) hadError = true;
                     if (hadError) break;
 
                     //Send message and update progress
@@ -154,6 +160,9 @@ namespace Arise.FileSyncer.Core.FileSync
 
             //Call finished callback
             sendInfo.Finished();
+
+            // Decrement counter
+            Interlocked.Decrement(ref senderLength);
         }
 
         private static int FileReadSafe(Stream fileStream, ref byte[] buffer, ref bool hadError)
@@ -194,7 +203,7 @@ namespace Arise.FileSyncer.Core.FileSync
                         chunkRequestEvent = null;
                     }
 
-                    sender.Dispose();
+                    sender.Complete();
                 }
             }
         }
