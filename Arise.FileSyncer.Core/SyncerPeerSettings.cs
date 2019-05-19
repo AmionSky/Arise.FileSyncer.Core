@@ -61,5 +61,17 @@ namespace Arise.FileSyncer.Core
             ProgressTimeout = 61000;
             PingInterval = 61000;
         }
+
+        public bool Verify()
+        {
+            return !(DeviceId == Guid.Empty
+                || string.IsNullOrWhiteSpace(DisplayName)
+                || DeviceKeys == null
+                || Profiles == null
+                || BufferSize <= 0
+                || ChunkRequestCount <= 0
+                || ProgressTimeout <= 0
+                || PingInterval <= 0);
+        }
     }
 }

@@ -52,5 +52,19 @@ namespace Arise.FileSyncer.Core.Test
             Assert.IsFalse(settings.Profiles.TryGetValue(id4, out var profile));
             Assert.IsNull(profile);
         }
+
+        [TestMethod]
+        public void TestVerify_Ok()
+        {
+            var settings = new SyncerPeerSettings(Guid.NewGuid(), "Test");
+            Assert.IsTrue(settings.Verify());
+        }
+
+        [TestMethod]
+        public void TestVerify_Fail()
+        {
+            var settings = new SyncerPeerSettings(Guid.Empty, "Test");
+            Assert.IsFalse(settings.Verify());
+        }
     }
 }
