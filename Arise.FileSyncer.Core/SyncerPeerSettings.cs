@@ -8,22 +8,22 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Id of the local device.
         /// </summary>
-        public Guid DeviceId { get; }
+        public Guid DeviceId { get; private set; }
 
         /// <summary>
         /// Readable name of the local device.
         /// </summary>
-        public string DisplayName { get; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         /// Paired devices. (Remote Device Id, Verification Key)
         /// </summary>
-        public ConcurrentDictionary<Guid, Guid> DeviceKeys { get; }
+        public ConcurrentDictionary<Guid, Guid> DeviceKeys { get; private set; }
 
         /// <summary>
         /// Saved sync profiles. (Profile ID, Profile Data)
         /// </summary>
-        public ConcurrentDictionary<Guid, SyncProfile> Profiles { get; }
+        public ConcurrentDictionary<Guid, SyncProfile> Profiles { get; private set; }
 
         /// <summary>
         /// Size of the file send buffer.
@@ -72,6 +72,49 @@ namespace Arise.FileSyncer.Core
                 || ChunkRequestCount <= 0
                 || ProgressTimeout <= 0
                 || PingInterval <= 0);
+        }
+
+        public void Fix(SyncerPeerSettings settings)
+        {
+            if (DeviceId == Guid.Empty)
+            {
+                DeviceId = settings.DeviceId;
+            }
+
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
+                DisplayName = settings.DisplayName;
+            }
+
+            if (DeviceKeys == null)
+            {
+                DeviceKeys = settings.DeviceKeys;
+            }
+
+            if (Profiles == null)
+            {
+                Profiles = settings.Profiles;
+            }
+
+            if (BufferSize <= 0)
+            {
+                BufferSize = settings.BufferSize;
+            }
+
+            if (ChunkRequestCount <= 0)
+            {
+                ChunkRequestCount = settings.ChunkRequestCount;
+            }
+
+            if (ProgressTimeout <= 0)
+            {
+                ProgressTimeout = settings.ProgressTimeout;
+            }
+
+            if (PingInterval <= 0)
+            {
+                PingInterval = settings.PingInterval;
+            }
         }
     }
 }
