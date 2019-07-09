@@ -34,7 +34,7 @@ namespace Arise.FileSyncer.Core
         public event EventHandler<ConnectionRemovedEventArgs> ConnectionRemoved;
 
         /// <summary>
-        /// Called when a profile got changed or updated.
+        /// [Async] Called when a profile got changed or updated.
         /// </summary>
         public event EventHandler<ProfileEventArgs> ProfileChanged;
 
@@ -346,7 +346,7 @@ namespace Arise.FileSyncer.Core
 
         internal virtual void OnProfileChanged(ProfileEventArgs e)
         {
-            ProfileChanged?.Invoke(this, e);
+            Task.Run(() => ProfileChanged?.Invoke(this, e));
         }
 
         internal virtual void OnProfileAdded(ProfileEventArgs e)
