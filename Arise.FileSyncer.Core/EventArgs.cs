@@ -101,4 +101,18 @@ namespace Arise.FileSyncer.Core
             RemoteDeviceId = remoteDeviceId;
         }
     }
+
+    public class FileBuiltEventArgs : EventArgs
+    {
+        public Guid ProfileId { get; }
+        public string RootPath { get; }
+        public string RelativePath { get; }
+
+        public FileBuiltEventArgs(Guid profileId, string rootPath, string relativePath)
+        {
+            ProfileId = profileId;
+            RootPath = rootPath;
+            RelativePath = relativePath;
+        }
+    }
 }

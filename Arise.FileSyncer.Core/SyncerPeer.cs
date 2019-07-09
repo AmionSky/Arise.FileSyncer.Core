@@ -69,6 +69,11 @@ namespace Arise.FileSyncer.Core
         public event EventHandler<NewPairAddedEventArgs> NewPairAdded;
 
         /// <summary>
+        /// [Async] Called when the file builder completed a file.
+        /// </summary>
+        public event EventHandler<FileBuiltEventArgs> FileBuilt;
+
+        /// <summary>
         /// Allow sending and receiving pairing requests.
         /// </summary>
         public bool AllowPairing { get => _allowPairing; set => _allowPairing = value; }
@@ -371,6 +376,11 @@ namespace Arise.FileSyncer.Core
         internal virtual void OnNewPairAdded(NewPairAddedEventArgs e)
         {
             NewPairAdded?.Invoke(this, e);
+        }
+
+        internal virtual void OnFileBuilt(FileBuiltEventArgs e)
+        {
+            FileBuilt?.Invoke(this, e);
         }
 
         #region IDisposable Support

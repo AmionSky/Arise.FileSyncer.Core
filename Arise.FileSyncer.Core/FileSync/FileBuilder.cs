@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Arise.FileSyncer.Core.Components;
 using Arise.FileSyncer.Core.Helpers;
 using Arise.FileSyncer.Core.Messages;
@@ -284,6 +285,9 @@ namespace Arise.FileSyncer.Core.FileSync
                         }
                     }
                     else Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
+
+                    // Send event that the file has been built. Use task cause it does not have to be synchronous.
+                    Task.Run(() => owner.OnFileBuilt(new FileBuiltEventArgs(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath)));
                 }
                 else
                 {
