@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Messages;
 using Arise.FileSyncer.Core.Plugins;
@@ -380,7 +381,7 @@ namespace Arise.FileSyncer.Core
 
         internal virtual void OnFileBuilt(FileBuiltEventArgs e)
         {
-            FileBuilt?.Invoke(this, e);
+            Task.Run(() => FileBuilt?.Invoke(this, e));
         }
 
         #region IDisposable Support
