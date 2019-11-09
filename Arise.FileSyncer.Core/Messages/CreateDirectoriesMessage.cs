@@ -17,7 +17,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public CreateDirectoriesMessage() { }
 
-        public CreateDirectoriesMessage(Guid profileId, SyncProfile syncProfile, string[] directories)
+        public CreateDirectoriesMessage(Guid profileId, SyncProfile syncProfile, IList<string> directories)
         {
             ProfileId = profileId;
             Key = syncProfile.Key;
