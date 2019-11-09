@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Arise.FileSyncer.Core.Helpers;
 
@@ -8,6 +8,8 @@ namespace Arise.FileSyncer.Core.FileSync
     {
         public List<string> RemoteMissingFiles { get; private set; }
         public List<string> RemoteMissingDirectories { get; private set; }
+        public List<string> LocalMissingFiles { get; private set; }
+        public List<string> LocalMissingDirectories { get; private set; }
 
         public DirectoryTreeDifference(FileSystemItem[] localTree, FileSystemItem[] remoteTree, bool supportTimestamp, bool preferLocal = true)
         {
@@ -15,6 +17,8 @@ namespace Arise.FileSyncer.Core.FileSync
 
             RemoteMissingFiles = new List<string>();
             RemoteMissingDirectories = new List<string>();
+            LocalMissingFiles = new List<string>();
+            LocalMissingDirectories = new List<string>();
 
             foreach (FileSystemItem localItem in localTree)
             {
@@ -37,6 +41,7 @@ namespace Arise.FileSyncer.Core.FileSync
                             if (supportTimestamp)
                             {
                                 double timeDiff = (localItem.LastWriteTime - remoteItem.LastWriteTime).TotalSeconds;
+                                if (preferLocal) timeDiff = Math.Abs(timeDiff);
 
                                 if (timeDiff > 1.0)
                                 {
@@ -73,6 +78,46 @@ namespace Arise.FileSyncer.Core.FileSync
                     }
                 }
             }
+            
+            //Clear exclude to be able to use the same list for remoteTree check
+            exclude.Clear();
+
+            //Find all remote items that was not handled in the localTree test. And add them to local missing lists.
+            foreach (var remoteItem in remoteTree)
+            {
+                string relativeName = PathHelper.GetCorrect(remoteItem.RelativePath, remoteItem.IsDirectory);
+
+                if (IsContainBeginning(exclude, relativeName))
+                {
+                    if (remoteItem.IsDirectory) LocalMissingDirectories.Add(relativeName);
+                    else LocalMissingFiles.Add(relativeName);
+                    continue;
+                }
+
+                bool found = false;
+                foreach (var localItem in localTree)
+                {
+                    if (relativeName.Equals(PathHelper.GetCorrect(localItem.RelativePath, localItem.IsDirectory), StringComparison.Ordinal))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    if (remoteItem.IsDirectory)
+                    {
+                        LocalMissingDirectories.Add(relativeName);
+                        exclude.Add(relativeName);
+                    }
+                    else
+                    {
+                        LocalMissingFiles.Add(relativeName);
+                    }
+                }
+            }
+            
         }
 
         private static bool IsContainBeginning(List<string> list, string item)
