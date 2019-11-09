@@ -16,6 +16,15 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override NetMessageType MessageType => NetMessageType.DeleteFiles;
 
+        public DeleteFilesMessage() { }
+
+        public DeleteFilesMessage(Guid profileId, SyncProfile syncProfile, IList<string> files)
+        {
+            ProfileId = profileId;
+            Key = syncProfile.Key;
+            Files = files;
+        }
+
         public override void Process(SyncerConnection con)
         {
             if (con.Owner.Settings.Profiles.TryGetValue(ProfileId, out var profile))

@@ -150,7 +150,7 @@ namespace Arise.FileSyncer.Core
             Owner.OnNewPairAdded(new NewPairAddedEventArgs(device));
         }
 
-        internal async void StartProfileSync(SyncProfileState remoteProfile)
+        internal void StartProfileSync(SyncProfileState remoteProfile)
         {
             bool exists = Owner.Settings.Profiles.TryGetValue(remoteProfile.Id, out var localProfile);
 
@@ -220,7 +220,8 @@ namespace Arise.FileSyncer.Core
             if (remoteProfile.AllowDelete)
             {
                 // Delete
-
+                Send(new DeleteFilesMessage(remoteProfile.Id, localProfile, delta.LocalMissingFiles));
+                Send(new DeleteDirectoriesMessage(remoteProfile.Id, localProfile, delta.LocalMissingDirectories));
             }
 
             // Send
