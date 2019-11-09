@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace Arise.FileSyncer.Core.FileSync
@@ -12,6 +12,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public delegate bool DelegateFileCreateWriteStream(Guid profileId, string rootPath, string relativePath, out Stream fileStream, FileMode fileMode = FileMode.Append);
         public delegate bool DelegateFileCreateReadStream(Guid profileId, string rootPath, string relativePath, out Stream fileStream);
         public delegate bool DelegateDirectoryCreate(Guid profileId, string rootPath, string relativePath);
+        public delegate bool DelegateDirectoryDelete(Guid profileId, string rootPath, string relativePath);
 
         public static DelegateFileCreate FileCreate = (_, r, p) => DefaultFileCreate(Path.Combine(r, p));
         public static DelegateFileDelete FileDelete = (_, r, p) => DefaultFileDelete(Path.Combine(r, p));
@@ -20,6 +21,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public static DelegateFileCreateWriteStream FileCreateWriteStream = DefaultFileCreateWriteStream;
         public static DelegateFileCreateReadStream FileCreateReadStream = DefaultFileCreateReadStream;
         public static DelegateDirectoryCreate DirectoryCreate = (_, r, p) => DefaultDirectoryCreate(Path.Combine(r, p));
+        public static DelegateDirectoryDelete DirectoryDelete = (_, r, p) => DefaultDirectoryDelete(Path.Combine(r, p));
 
         private const string LogName = "Utility";
 
@@ -35,7 +37,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
             catch (Exception ex)
             {
-                Log.Warning(LogName + ": exception when creating file. MSG: " + ex.Message);
+                Log.Warning(LogName + ": exception while creating file. MSG: " + ex.Message);
                 return false;
             }
 
@@ -47,7 +49,7 @@ namespace Arise.FileSyncer.Core.FileSync
             try { if (File.Exists(path)) File.Delete(path); }
             catch (Exception ex)
             {
-                Log.Warning(LogName + ": exception when deleting file. MSG: " + ex.Message);
+                Log.Warning(LogName + ": exception while deleting file. MSG: " + ex.Message);
                 return false;
             }
 
@@ -98,7 +100,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
             catch (Exception ex)
             {
-                Log.Warning(LogName + ": exception when opening file for write. MSG: " + ex.Message);
+                Log.Warning(LogName + ": exception while opening file for write. MSG: " + ex.Message);
                 fileStream = null;
                 return false;
             }
@@ -116,7 +118,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
             catch (Exception ex)
             {
-                Log.Warning(LogName + ": exception when opening file for read. MSG: " + ex.Message);
+                Log.Warning(LogName + ": exception while opening file for read. MSG: " + ex.Message);
                 fileStream = null;
                 return false;
             }
@@ -132,7 +134,22 @@ namespace Arise.FileSyncer.Core.FileSync
             }
             catch (Exception ex)
             {
-                Log.Warning(LogName + ": exception when creating directory. MSG: " + ex.Message);
+                Log.Warning(LogName + ": exception while creating directory. MSG: " + ex.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool DefaultDirectoryDelete(string path)
+        {
+            try
+            {
+                if (Directory.Exists(path)) Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(LogName + ": exception while deleting directory. MSG: " + ex.Message);
                 return false;
             }
 

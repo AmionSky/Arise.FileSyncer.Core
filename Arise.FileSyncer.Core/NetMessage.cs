@@ -31,6 +31,9 @@ namespace Arise.FileSyncer.Core
         SyncProfile = 14,
 
         IsAlive = 15,
+
+        DeleteFiles = 16,
+        DeleteDirectories = 17,
     }
 
     internal abstract class NetMessage : IBinarySerializable

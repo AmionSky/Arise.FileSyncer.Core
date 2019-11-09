@@ -167,10 +167,12 @@ namespace Arise.FileSyncer.Core
             }
 
             Log.Info("Processing Sync Profile: " + remoteProfile.Id);
+            /*
             string[] directories = null;
             IList<string> filesRelative = null;
             IList<string> filesAbsolute = null;
 
+            
             // Plugin
             bool usedPlugin = false;
             if (!string.IsNullOrEmpty(localProfile.Plugin))
@@ -211,10 +213,19 @@ namespace Arise.FileSyncer.Core
                 directories = delta.RemoteMissingDirectories.ToArray();
                 filesRelative = delta.RemoteMissingFiles;
             }
+            */
+
+            var delta = new DirectoryTreeDifference(state, remoteProfile.State, SupportTimestamp);
+
+            if (remoteProfile.AllowDelete)
+            {
+                // Delete
+
+            }
 
             // Send
-            Send(new CreateDirectoriesMessage(remoteProfile.Id, localProfile, directories));
-            fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, filesRelative, filesAbsolute));
+            Send(new CreateDirectoriesMessage(remoteProfile.Id, localProfile, delta.RemoteMissingDirectories));
+            fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, delta.RemoteMissingFiles, null));
 
             // Update last sync date
             localProfile.UpdateLastSyncDate(Owner, remoteProfile.Id);
