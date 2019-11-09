@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Helpers;
@@ -10,7 +11,7 @@ namespace Arise.FileSyncer.Core.Messages
     {
         public Guid ProfileId { get; set; }
         public Guid Key { get; set; }
-        public string[] Directories { get; set; }
+        public IList<string> Directories { get; set; }
 
         public override NetMessageType MessageType => NetMessageType.CreateDirectories;
 
@@ -29,12 +30,12 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 if (profile.AllowReceive && profile.Key == Key)
                 {
-                    for (int i = 0; i < Directories.Length; i++)
+                    for (int i = 0; i < Directories.Count; i++)
                     {
                         Utility.DirectoryCreate(ProfileId, profile.RootDirectory, PathHelper.GetCorrect(Directories[i], true));
                     }
 
-                    if (Directories.Length > 0)
+                    if (Directories.Count > 0)
                     {
                         con.Owner.OnProfileChanged(new ProfileEventArgs(ProfileId, profile));
                     }
