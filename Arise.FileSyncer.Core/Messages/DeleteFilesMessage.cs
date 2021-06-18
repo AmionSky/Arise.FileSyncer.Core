@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Helpers;
 
@@ -53,9 +53,9 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Serialize(Stream stream)
         {
-            stream.Write(ProfileId);
-            stream.Write(Key);
-            stream.Write(Files);
+            stream.WriteAFS(ProfileId);
+            stream.WriteAFS(Key);
+            stream.WriteAFS(Files);
         }
     }
 }

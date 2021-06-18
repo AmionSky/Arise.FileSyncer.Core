@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {

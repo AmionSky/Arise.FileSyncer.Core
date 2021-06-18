@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
@@ -36,10 +36,10 @@ namespace Arise.FileSyncer.Core.Messages
         {
             base.Serialize(stream);
 
-            stream.Write(ProfileId);
-            stream.Write(ProfileKey);
-            stream.Write(RelativePath);
-            stream.Write(FileSize);
+            stream.WriteAFS(ProfileId);
+            stream.WriteAFS(ProfileKey);
+            stream.WriteAFS(RelativePath);
+            stream.WriteAFS(FileSize);
         }
     }
 }

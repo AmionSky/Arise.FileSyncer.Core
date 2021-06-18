@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
@@ -62,14 +62,14 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Serialize(Stream stream)
         {
-            stream.Write(Success);
+            stream.WriteAFS(Success);
 
             if (Success)
             {
-                stream.Write(DisplayName);
-                stream.Write(SupportTimestamp);
+                stream.WriteAFS(DisplayName);
+                stream.WriteAFS(SupportTimestamp);
 
-                stream.Write(ProfileIds);
+                stream.WriteAFS(ProfileIds);
             }
         }
     }

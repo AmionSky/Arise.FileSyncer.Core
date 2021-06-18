@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
@@ -35,11 +35,11 @@ namespace Arise.FileSyncer.Core.Messages
         {
             base.Serialize(stream);
 
-            stream.Write(Success);
+            stream.WriteAFS(Success);
             if (Success)
             {
-                stream.Write(LastWriteTime);
-                stream.Write(CreationTime);
+                stream.WriteAFS(LastWriteTime);
+                stream.WriteAFS(CreationTime);
             }
         }
     }

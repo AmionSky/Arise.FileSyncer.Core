@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using Arise.FileSyncer.Core.Helpers;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
@@ -66,7 +66,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Serialize(Stream stream)
         {
-            stream.Write(Key);
+            stream.WriteAFS(Key);
         }
     }
 }

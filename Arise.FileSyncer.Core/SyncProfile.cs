@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Arise.FileSyncer.Core.FileSync;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
@@ -94,22 +94,22 @@ namespace Arise.FileSyncer.Core
 
         public void Serialize(Stream stream)
         {
-            stream.Write(Key);
+            stream.WriteAFS(Key);
 
-            stream.Write(Name);
-            stream.Write(Activated);
+            stream.WriteAFS(Name);
+            stream.WriteAFS(Activated);
 
-            stream.Write(AllowSend);
-            stream.Write(AllowReceive);
-            stream.Write(AllowDelete);
+            stream.WriteAFS(AllowSend);
+            stream.WriteAFS(AllowReceive);
+            stream.WriteAFS(AllowDelete);
 
-            stream.Write(LastSyncDate);
-            stream.Write(CreationDate);
+            stream.WriteAFS(LastSyncDate);
+            stream.WriteAFS(CreationDate);
 
-            stream.Write(SkipHidden);
-            stream.Write(RootDirectory);
+            stream.WriteAFS(SkipHidden);
+            stream.WriteAFS(RootDirectory);
 
-            stream.Write(Plugin);
+            stream.WriteAFS(Plugin);
         }
 
         public class Creator

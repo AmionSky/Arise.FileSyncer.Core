@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Arise.FileSyncer.Core.FileSync;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
@@ -40,18 +40,18 @@ namespace Arise.FileSyncer.Core
 
         public void Serialize(Stream stream)
         {
-            stream.Write(Id);
-            stream.Write(Key);
-            stream.Write(AllowDelete);
+            stream.WriteAFS(Id);
+            stream.WriteAFS(Key);
+            stream.WriteAFS(AllowDelete);
 
             if (State != null)
             {
-                stream.Write(true);
-                stream.Write(State);
+                stream.WriteAFS(true);
+                stream.WriteAFS(State);
             }
             else
             {
-                stream.Write(false);
+                stream.WriteAFS(false);
             }
         }
 

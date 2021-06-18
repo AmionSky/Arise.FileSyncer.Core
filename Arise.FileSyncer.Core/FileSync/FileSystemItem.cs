@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
-using Arise.FileSyncer.Core.Serializer;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
@@ -38,13 +38,13 @@ namespace Arise.FileSyncer.Core.FileSync
 
         public void Serialize(Stream stream)
         {
-            stream.Write(IsDirectory);
-            stream.Write(RelativePath);
+            stream.WriteAFS(IsDirectory);
+            stream.WriteAFS(RelativePath);
 
             if (!IsDirectory)
             {
-                stream.Write(FileSize);
-                stream.Write(LastWriteTime);
+                stream.WriteAFS(FileSize);
+                stream.WriteAFS(LastWriteTime);
             }
         }
     }

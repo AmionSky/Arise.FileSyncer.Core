@@ -1,5 +1,5 @@
-﻿using System.IO;
-using Arise.FileSyncer.Core.Serializer;
+using System.IO;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
@@ -25,7 +25,7 @@ namespace Arise.FileSyncer.Core.Messages
         {
             base.Serialize(stream);
 
-            stream.Write(Chunk);
+            stream.WriteAFS(Chunk);
         }
     }
 }

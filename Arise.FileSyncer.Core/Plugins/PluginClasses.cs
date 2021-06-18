@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Arise.FileSyncer.Core.FileSync;
 
 namespace Arise.FileSyncer.Core.Plugins
