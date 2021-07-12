@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using Arise.FileSyncer.Core.Messages;
 using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
@@ -48,37 +48,30 @@ namespace Arise.FileSyncer.Core
 
     internal static class NetMessageFactory
     {
-        private static readonly Dictionary<NetMessageType, Type> messageTypes;
-
-        static NetMessageFactory()
-        {
-            messageTypes = new Dictionary<NetMessageType, Type>();
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-
-            foreach (Type classType in currentAssembly.GetTypes())
-            {
-                if (typeof(NetMessage).IsAssignableFrom(classType) && !classType.IsAbstract)
-                {
-                    NetMessage netMessage = CreateClass(classType);
-                    messageTypes.Add(netMessage.MessageType, classType);
-                }
-            }
-        }
-
         public static NetMessage Create(NetMessageType messageType)
         {
-            return CreateClass(GetClassType(messageType));
-        }
-
-        private static Type GetClassType(NetMessageType messageType)
-        {
-            if (messageTypes.TryGetValue(messageType, out Type classType)) return classType;
-            else throw new Exception("NetMessage: No class found for messageType");
-        }
-
-        private static NetMessage CreateClass(Type messageClassType)
-        {
-            return (NetMessage)Activator.CreateInstance(messageClassType);
+            return messageType switch
+            {
+                NetMessageType.None => throw new Exception("NetMessage: Can't create 'None' message"),
+                NetMessageType.VerificationData => new VerificationDataMessage(),
+                NetMessageType.VerificationResponse => new VerificationResponseMessage(),
+                NetMessageType.SyncInitialization => new SyncInitializationMessage(),
+                NetMessageType.FileStart => new FileStartMessage(),
+                NetMessageType.FileEnd => new FileEndMessage(),
+                NetMessageType.FileData => new FileDataMessage(),
+                NetMessageType.FileChunkRequest => new FileChunkRequestMessage(),
+                NetMessageType.FileSize => new FileSizeMessage(),
+                NetMessageType.CreateDirectories => new CreateDirectoriesMessage(),
+                NetMessageType.ProfileShare => new ProfileShareMessage(),
+                NetMessageType.PairingRequest => new PairingRequestMessage(),
+                NetMessageType.PairingResponse => new PairingResponseMessage(),
+                NetMessageType.SyncInitFinished => new SyncInitFinishedMessage(),
+                NetMessageType.SyncProfile => new SyncProfileMessage(),
+                NetMessageType.IsAlive => new IsAliveMessage(),
+                NetMessageType.DeleteFiles => new DeleteFilesMessage(),
+                NetMessageType.DeleteDirectories => new DeleteDirectoriesMessage(),
+                _ => throw new Exception("NetMessage: No class found for messageType"),
+            };
         }
     }
 }
