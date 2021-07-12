@@ -78,7 +78,7 @@ namespace Arise.FileSyncer.Core.FileSync
                     }
                 }
             }
-            
+
             //Clear exclude to be able to use the same list for remoteTree check
             exclude.Clear();
 
@@ -117,7 +117,7 @@ namespace Arise.FileSyncer.Core.FileSync
                     }
                 }
             }
-            
+
         }
 
         private static bool IsContainBeginning(List<string> list, string item)

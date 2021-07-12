@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Arise.FileSyncer.Core.Components;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Messages;
-using Arise.FileSyncer.Core.Plugins;
 
 namespace Arise.FileSyncer.Core
 {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Arise.FileSyncer.Core.Messages;
 using Arise.FileSyncer.Serializer;

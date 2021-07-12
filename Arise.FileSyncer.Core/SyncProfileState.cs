@@ -22,6 +22,16 @@ namespace Arise.FileSyncer.Core
             State = state;
         }
 
+        public static SyncProfileState Create(Guid id, SyncProfile profile)
+        {
+            if (profile.GenerateState(out var state))
+            {
+                return new SyncProfileState(id, profile.Key, profile.AllowDelete, state);
+            }
+
+            return null;
+        }
+
         public void Deserialize(Stream stream)
         {
             Id = stream.ReadGuid();
@@ -53,16 +63,6 @@ namespace Arise.FileSyncer.Core
             {
                 stream.WriteAFS(false);
             }
-        }
-
-        public static SyncProfileState Create(Guid id, SyncProfile profile)
-        {
-            if (profile.GenerateState(out var state))
-            {
-                return new SyncProfileState(id, profile.Key, profile.AllowDelete, state);
-            }
-
-            return null;
         }
     }
 }

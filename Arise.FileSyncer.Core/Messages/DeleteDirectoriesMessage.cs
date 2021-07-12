@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Arise.FileSyncer.Serializer;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Helpers;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
