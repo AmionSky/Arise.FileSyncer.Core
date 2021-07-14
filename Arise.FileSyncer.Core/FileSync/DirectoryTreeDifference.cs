@@ -13,7 +13,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         public DirectoryTreeDifference(FileSystemItem[] localTree, FileSystemItem[] remoteTree, bool supportTimestamp, bool preferLocal = true)
         {
-            List<string> exclude = new List<string>();
+            List<string> exclude = new();
 
             RemoteMissingFiles = new List<string>();
             RemoteMissingDirectories = new List<string>();

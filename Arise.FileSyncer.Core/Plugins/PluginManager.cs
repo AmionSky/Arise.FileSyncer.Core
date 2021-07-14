@@ -33,7 +33,7 @@ namespace Arise.FileSyncer.Core.Plugins
 
         public IList<Plugin> GetByFeatures(PluginFeatures features)
         {
-            List<Plugin> selected = new List<Plugin>();
+            List<Plugin> selected = new();
 
             foreach (KeyValuePair<string, Plugin> kv in plugins)
             {

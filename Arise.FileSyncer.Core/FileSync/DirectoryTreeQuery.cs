@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Arise.FileSyncer.Core.Helpers;
@@ -23,8 +23,8 @@ namespace Arise.FileSyncer.Core.FileSync
             }
 
             bool doRemove = !string.IsNullOrEmpty(remove);
-            List<FileSystemItem> treeInfoList = new List<FileSystemItem>();
-            List<string> hiddenList = new List<string>();
+            List<FileSystemItem> treeInfoList = new();
+            List<string> hiddenList = new();
 
             DirectoryInfo rootDirInfo;
             try { rootDirInfo = new DirectoryInfo(PathHelper.GetCorrect(folder, true)); }

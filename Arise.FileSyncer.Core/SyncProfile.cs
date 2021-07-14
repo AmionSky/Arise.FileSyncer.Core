@@ -23,7 +23,7 @@ namespace Arise.FileSyncer.Core
         private long _lastSyncDate = 0;
         public DateTime LastSyncDate
         {
-            get => new DateTime(Interlocked.Read(ref _lastSyncDate));
+            get => new(Interlocked.Read(ref _lastSyncDate));
             set => Interlocked.Exchange(ref _lastSyncDate, value.Ticks);
         }
 

@@ -19,7 +19,7 @@ namespace Arise.FileSyncer.Core.Messages
 
             if (peerSettings.DeviceKeys.TryGetValue(con.GetRemoteDeviceId(), out Guid key))
             {
-                VerificationDataMessage message = new VerificationDataMessage()
+                VerificationDataMessage message = new()
                 {
                     Key = Security.KeyGenerator(key, peerSettings.DeviceId)
                 };

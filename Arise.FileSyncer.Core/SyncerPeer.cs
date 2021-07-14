@@ -117,7 +117,7 @@ namespace Arise.FileSyncer.Core
         {
             if (connection == null) return false;
 
-            SyncerConnection syncerConnection = new SyncerConnection(this, connection);
+            SyncerConnection syncerConnection = new(this, connection);
             bool added = connections.TryAdd(connection.Id, syncerConnection);
 
             if (added)

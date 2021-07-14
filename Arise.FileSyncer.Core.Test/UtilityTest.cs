@@ -79,7 +79,7 @@ namespace Arise.FileSyncer.Core.Test
             File.SetCreationTime(filePath, DateTime.Now);
             File.SetLastWriteTime(filePath, DateTime.Now);
 
-            FileInfo fileInfo = new FileInfo(filePath);
+            FileInfo fileInfo = new(filePath);
             fileInfo.Refresh();
 
             Assert.AreNotEqual(targetDate, fileInfo.CreationTime);

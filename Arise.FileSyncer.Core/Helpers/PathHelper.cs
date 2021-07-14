@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -18,12 +18,12 @@ namespace Arise.FileSyncer.Core.Helpers
         {
             if (string.IsNullOrEmpty(path)) return string.Empty;
 
-            StringBuilder pathBuilder = new StringBuilder(path);
+            StringBuilder pathBuilder = new(path);
             pathBuilder.Replace(OtherSeparatorChar, Path.DirectorySeparatorChar);
 
             if (isDirectory)
             {
-                char lastChar = path[path.Length - 1];
+                char lastChar = path[^1];
                 if (lastChar != Path.DirectorySeparatorChar && lastChar != OtherSeparatorChar)
                 {
                     pathBuilder.Append(Path.DirectorySeparatorChar);
@@ -51,7 +51,7 @@ namespace Arise.FileSyncer.Core.Helpers
                 return string.Empty;
             }
 
-            return fullPath.Substring(rootPath.Length);
+            return fullPath[rootPath.Length..];
         }
     }
 }

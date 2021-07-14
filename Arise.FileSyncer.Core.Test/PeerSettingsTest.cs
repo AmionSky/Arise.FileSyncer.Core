@@ -24,7 +24,7 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestGetProfileIds_Zero()
         {
-            SyncerPeerSettings emptySettings = new SyncerPeerSettings();
+            SyncerPeerSettings emptySettings = new();
             Assert.AreEqual(0, emptySettings.Profiles.Count);
         }
 

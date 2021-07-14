@@ -60,7 +60,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private int builderLength = 0;
         private Guid _writerFileId = Guid.Empty;
-        private readonly object _writerFileIdLock = new object();
+        private readonly object _writerFileIdLock = new();
         private bool disposed = false;
 
         public FileBuilder(SyncerPeer owner)
@@ -95,7 +95,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private void Owner_ConnectionRemoved(object sender, ConnectionRemovedEventArgs e)
         {
-            List<Guid> markedForRemove = new List<Guid>();
+            List<Guid> markedForRemove = new();
 
             foreach (KeyValuePair<Guid, BuilderFileInfo> fileInfo in fileInfos)
             {

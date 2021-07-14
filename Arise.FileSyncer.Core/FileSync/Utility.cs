@@ -14,6 +14,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public delegate bool DelegateDirectoryCreate(Guid profileId, string rootPath, string relativePath);
         public delegate bool DelegateDirectoryDelete(Guid profileId, string rootPath, string relativePath);
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static DelegateFileCreate FileCreate = (_, r, p) => DefaultFileCreate(Path.Combine(r, p));
         public static DelegateFileDelete FileDelete = (_, r, p) => DefaultFileDelete(Path.Combine(r, p));
         public static DelegateFileRename FileRename = (_, r, p, t) => DefaultFileRename(Path.Combine(r, p), t);
@@ -22,6 +23,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public static DelegateFileCreateReadStream FileCreateReadStream = DefaultFileCreateReadStream;
         public static DelegateDirectoryCreate DirectoryCreate = (_, r, p) => DefaultDirectoryCreate(Path.Combine(r, p));
         public static DelegateDirectoryDelete DirectoryDelete = (_, r, p) => DefaultDirectoryDelete(Path.Combine(r, p));
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         private const string LogName = "Utility";
 
@@ -75,7 +77,7 @@ namespace Arise.FileSyncer.Core.FileSync
         {
             try
             {
-                FileInfo fileInfo = new FileInfo(path)
+                FileInfo fileInfo = new(path)
                 {
                     CreationTime = creationTime,
                     LastWriteTime = lastWriteTime

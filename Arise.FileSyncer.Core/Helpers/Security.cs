@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 
 namespace Arise.FileSyncer.Core.Helpers
@@ -12,10 +12,8 @@ namespace Arise.FileSyncer.Core.Helpers
 
         private static byte[] KeyGenerator(byte[] code, byte[] salt, int length)
         {
-            using (Rfc2898DeriveBytes generator = new Rfc2898DeriveBytes(code, salt, 1000))
-            {
-                return generator.GetBytes(length);
-            }
+            using Rfc2898DeriveBytes generator = new(code, salt, 1000);
+            return generator.GetBytes(length);
         }
     }
 }

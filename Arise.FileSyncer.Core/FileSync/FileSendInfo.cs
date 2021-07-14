@@ -88,7 +88,7 @@ namespace Arise.FileSyncer.Core.FileSync
             IList<string> absolutePaths = null, Action<FileSendInfo> finishedCallback = null)
         {
             bool useAbsolutePaths = absolutePaths != null;
-            List<FileSendInfo> sendInfos = new List<FileSendInfo>();
+            List<FileSendInfo> sendInfos = new();
 
             for (int i = 0; i < relativePaths.Count; i++)
             {
