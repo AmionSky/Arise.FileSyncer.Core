@@ -186,7 +186,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private void Case_FileInfoStart(FileStartMessage message)
         {
-            if (!owner.Settings.Profiles.TryGetValue(message.ProfileId, out var profile))
+            if (!owner.Profiles.TryGetProfile(message.ProfileId, out var profile))
             {
                 Log.Warning($"{this}: Profile does not exist: {message.ProfileId}");
                 return;
@@ -274,7 +274,7 @@ namespace Arise.FileSyncer.Core.FileSync
                         Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
                     {
                         //If the info update was successful
-                        if (owner.Settings.Profiles.TryGetValue(fileInfo.ProfileId, out var profile))
+                        if (owner.Profiles.TryGetProfile(fileInfo.ProfileId, out var profile))
                         {
                             profile.UpdateLastSyncDate(owner, fileInfo.ProfileId);
                         }

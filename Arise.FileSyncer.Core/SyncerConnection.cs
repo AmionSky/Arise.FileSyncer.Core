@@ -150,7 +150,7 @@ namespace Arise.FileSyncer.Core
 
         internal void StartProfileSync(SyncProfileState remoteProfile)
         {
-            bool exists = Owner.Settings.Profiles.TryGetValue(remoteProfile.Id, out var localProfile);
+            bool exists = Owner.Profiles.TryGetProfile(remoteProfile.Id, out var localProfile);
 
             if (!exists || !localProfile.AllowSend || localProfile.Key != remoteProfile.Key)
             {

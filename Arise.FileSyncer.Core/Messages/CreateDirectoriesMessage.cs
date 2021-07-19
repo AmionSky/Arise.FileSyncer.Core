@@ -26,7 +26,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Process(SyncerConnection con)
         {
-            if (con.Owner.Settings.Profiles.TryGetValue(ProfileId, out var profile))
+            if (con.Owner.Profiles.TryGetProfile(ProfileId, out var profile))
             {
                 if (profile.AllowReceive && profile.Key == Key)
                 {

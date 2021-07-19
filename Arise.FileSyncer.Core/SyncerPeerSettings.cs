@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 
 namespace Arise.FileSyncer.Core
 {
@@ -14,11 +13,6 @@ namespace Arise.FileSyncer.Core
         /// Readable name of the local device.
         /// </summary>
         public string DisplayName { get; private set; }
-
-        /// <summary>
-        /// Saved sync profiles. (Profile ID, Profile Data)
-        /// </summary>
-        public ConcurrentDictionary<Guid, SyncProfile> Profiles { get; private set; }
 
         /// <summary>
         /// Size of the file send buffer.
@@ -49,7 +43,6 @@ namespace Arise.FileSyncer.Core
         {
             DeviceId = deviceId;
             DisplayName = displayName;
-            Profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
             BufferSize = 4096;
             ChunkRequestCount = 16;
             ProgressTimeout = 61000;
@@ -60,7 +53,6 @@ namespace Arise.FileSyncer.Core
         {
             return !(DeviceId == Guid.Empty
                 || string.IsNullOrWhiteSpace(DisplayName)
-                || Profiles == null
                 || BufferSize <= 0
                 || ChunkRequestCount <= 0
                 || ProgressTimeout <= 0
@@ -77,9 +69,6 @@ namespace Arise.FileSyncer.Core
 
             if (string.IsNullOrWhiteSpace(DisplayName))
                 DisplayName = settings.DisplayName;
-
-            if (Profiles == null)
-                Profiles = settings.Profiles;
 
             if (BufferSize <= 0)
                 BufferSize = settings.BufferSize;

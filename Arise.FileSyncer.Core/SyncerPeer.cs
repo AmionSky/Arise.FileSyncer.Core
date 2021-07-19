@@ -84,6 +84,11 @@ namespace Arise.FileSyncer.Core
         public PeerDeviceKeys DeviceKeys { get; }
 
         /// <summary>
+        /// Manager of saved profiles
+        /// </summary>
+        public PeerProfiles Profiles { get; }
+
+        /// <summary>
         /// The peer settings class.
         /// </summary>
         public SyncerPeerSettings Settings { get; }
@@ -107,6 +112,8 @@ namespace Arise.FileSyncer.Core
 
             Connections = new PeerConnections(this);
             DeviceKeys = new PeerDeviceKeys();
+            Profiles = new PeerProfiles();
+
             Plugins = new PluginManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
@@ -137,7 +144,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="profileId">ID of the profile to share</param>
         public bool ShareProfile(Guid connectionId, Guid profileId)
         {
-            if (Settings.Profiles.TryGetValue(profileId, out var profile))
+            if (Profiles.TryGetProfile(profileId, out var profile))
             {
                 return TrySend(connectionId, new ProfileShareMessage(profileId, profile));
             }
@@ -153,7 +160,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="isResponse">Is it a response message. Should always be false.</param>
         public bool SyncProfile(Guid connectionId, Guid profileId, bool isResponse = false)
         {
-            if (!Settings.Profiles.TryGetValue(profileId, out var profile))
+            if (!Profiles.TryGetProfile(profileId, out var profile))
             {
                 return false;
             }
@@ -185,7 +192,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="newProfile">The new profile</param>
         public bool AddProfile(Guid profileId, SyncProfile newProfile)
         {
-            if (Settings.Profiles.TryAdd(profileId, newProfile))
+            if (Profiles.TryAdd(profileId, newProfile))
             {
                 Log.Info($"Profile added: {newProfile.Name}");
                 OnProfileAdded(new ProfileEventArgs(profileId, newProfile));
@@ -201,7 +208,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="profileId">ID of the profile to remove</param>
         public bool RemoveProfile(Guid profileId)
         {
-            if (Settings.Profiles.TryRemove(profileId, out var profile))
+            if (Profiles.TryRemove(profileId, out var profile))
             {
                 Log.Info($"Profile removed: {profile.Name}");
                 OnProfileRemoved(new ProfileEventArgs(profileId, profile));
@@ -220,11 +227,11 @@ namespace Arise.FileSyncer.Core
         /// <returns></returns>
         public bool UpdateProfile(Guid profileId, SyncProfile newProfile)
         {
-            if (Settings.Profiles.TryGetValue(profileId, out var profile))
+            if (Profiles.TryGetProfile(profileId, out var profile))
             {
-                if (Settings.Profiles.TryUpdate(profileId, newProfile, profile))
+                if (Profiles.TryUpdate(profileId, newProfile, profile))
                 {
-                    Log.Info($"Profile updated: {profileId} - {profile.Name}");
+                    Log.Info($"Profile updated: {profileId} - {newProfile.Name}");
                     OnProfileChanged(new ProfileEventArgs(profileId, newProfile));
                     return true;
                 }

@@ -19,7 +19,7 @@ namespace Arise.FileSyncer.Core.Messages
 
             foreach (var profileId in receivedIds)
             {
-                if (peer.Settings.Profiles.TryGetValue(profileId, out var profile))
+                if (peer.Profiles.TryGetProfile(profileId, out var profile))
                 {
                     if (profile.Activated && profile.AllowReceive)
                     {

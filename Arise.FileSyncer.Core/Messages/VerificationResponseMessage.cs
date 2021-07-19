@@ -18,16 +18,16 @@ namespace Arise.FileSyncer.Core.Messages
 
         public VerificationResponseMessage() { }
 
-        public VerificationResponseMessage(bool success, SyncerPeerSettings peerSettings)
+        public VerificationResponseMessage(bool success, SyncerPeer peer)
         {
             Success = success;
 
             if (success)
             {
                 Success = success;
-                DisplayName = peerSettings.DisplayName;
+                DisplayName = peer.Settings.DisplayName;
                 SupportTimestamp = SyncerPeer.SupportTimestamp;
-                ProfileIds = peerSettings.Profiles.Keys.ToArray();
+                ProfileIds = peer.Profiles.Ids.ToArray();
             }
         }
 

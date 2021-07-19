@@ -140,8 +140,8 @@ namespace Arise.FileSyncer.Core.Test
             using SyncerPeer peer = CreatePeer();
             peer.AddProfile(dummyId1, new SyncProfile());
 
-            Assert.IsTrue(peer.Settings.Profiles.ContainsKey(dummyId1));
-            Assert.IsFalse(peer.Settings.Profiles.ContainsKey(dummyId2));
+            Assert.IsTrue(peer.Profiles.Ids.Contains(dummyId1));
+            Assert.IsFalse(peer.Profiles.Ids.Contains(dummyId2));
         }
 
         [TestMethod]

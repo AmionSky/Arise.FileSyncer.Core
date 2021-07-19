@@ -46,18 +46,18 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 Log.Info("Verification successful");
                 con.Verified = true;
-                con.Send(new VerificationResponseMessage(true, con.Owner.Settings));
+                con.Send(new VerificationResponseMessage(true, con.Owner));
             }
             else if (con.Owner.AllowPairing)
             {
                 // Do not disconnect so it can re-pair with device
                 Log.Info("Verification failed - But allow pairing enabled");
-                con.Send(new VerificationResponseMessage(false, con.Owner.Settings));
+                con.Send(new VerificationResponseMessage(false, con.Owner));
             }
             else
             {
                 Log.Info("Verification failed");
-                con.SendAndDisconnect(new VerificationResponseMessage(false, con.Owner.Settings));
+                con.SendAndDisconnect(new VerificationResponseMessage(false, con.Owner));
             }
         }
 
