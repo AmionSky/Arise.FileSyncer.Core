@@ -79,10 +79,10 @@ namespace Arise.FileSyncer.Core.FileSync
                 }
             }
 
-            //Clear exclude to be able to use the same list for remoteTree check
+            // Clear exclude to be able to use the same list for remoteTree check
             exclude.Clear();
 
-            //Find all remote items that was not handled in the localTree test. And add them to local missing lists.
+            // Find all remote items that was not handled in the localTree test. And add them to local missing lists.
             foreach (var remoteItem in remoteTree)
             {
                 string relativeName = PathHelper.GetCorrect(remoteItem.RelativePath, remoteItem.IsDirectory);
