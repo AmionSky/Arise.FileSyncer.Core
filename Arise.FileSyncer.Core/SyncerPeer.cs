@@ -66,11 +66,19 @@ namespace Arise.FileSyncer.Core
             Settings = settings;
             AllowPairing = false;
 
-            Connections = new ConnectionManager(this);
+            Connections = new ConnectionManager();
             DeviceKeys = new DeviceKeyManager();
             Profiles = new ProfileManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
+        }
+
+        /// <summary>
+        /// Adds a new connection.
+        /// </summary>
+        public bool AddConnection(INetConnection connection)
+        {
+            return Connections.AddConnection(this, connection);
         }
 
         /// <summary>

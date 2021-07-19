@@ -232,6 +232,7 @@ namespace Arise.FileSyncer.Core
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

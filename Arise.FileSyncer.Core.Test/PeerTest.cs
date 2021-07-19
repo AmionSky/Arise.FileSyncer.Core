@@ -15,17 +15,17 @@ namespace Arise.FileSyncer.Core.Test
         public void TestAddConnection()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId2)));
-            Assert.IsFalse(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
-            Assert.IsFalse(peer.Connections.AddConnection(null));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId2)));
+            Assert.IsFalse(peer.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsFalse(peer.AddConnection(null));
         }
 
         [TestMethod]
         public void TestRemoveConnection()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             Assert.IsTrue(peer.Connections.RemoveConnection(dummyId1));
             Assert.IsFalse(peer.Connections.RemoveConnection(dummyId2));
         }
@@ -34,8 +34,8 @@ namespace Arise.FileSyncer.Core.Test
         public void TestGetConnectionIds()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId2)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId2)));
 
             var ids = peer.Connections.GetConnectionIds();
             Assert.AreEqual(2, ids.Count);
@@ -49,9 +49,9 @@ namespace Arise.FileSyncer.Core.Test
         {
             using SyncerPeer peer = CreatePeer();
             Assert.AreEqual(0, peer.Connections.GetConnectionCount());
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             Assert.AreEqual(1, peer.Connections.GetConnectionCount());
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId2)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId2)));
             Assert.AreEqual(2, peer.Connections.GetConnectionCount());
         }
 
@@ -60,7 +60,7 @@ namespace Arise.FileSyncer.Core.Test
         {
             using SyncerPeer peer = CreatePeer();
             Assert.IsFalse(peer.Connections.DoesConnectionExist(dummyId1));
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             Assert.IsTrue(peer.Connections.DoesConnectionExist(dummyId1));
         }
 
@@ -68,7 +68,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestTryGetConnection_Success()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
 
             bool result = peer.Connections.TryGetConnection(dummyId1, out ISyncerConnection connection);
             Assert.IsTrue(result);
@@ -88,7 +88,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestShareProfile_Success()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             peer.Profiles.AddProfile(dummyId1, new SyncProfile());
             Assert.IsTrue(peer.ShareProfile(dummyId1, dummyId1));
         }
@@ -105,7 +105,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestShareProfile_NullProfile()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             Assert.IsFalse(peer.ShareProfile(dummyId1, dummyId1));
         }
 
@@ -113,7 +113,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestSyncProfile_Success()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             peer.Profiles.AddProfile(dummyId1, new SyncProfile() { AllowSend = true, RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
             Assert.IsTrue(peer.SyncProfile(dummyId1, dummyId1));
         }
@@ -130,7 +130,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestSyncProfile_NullProfile()
         {
             using SyncerPeer peer = CreatePeer();
-            Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
+            Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
             Assert.IsFalse(peer.SyncProfile(dummyId1, dummyId1));
         }
 

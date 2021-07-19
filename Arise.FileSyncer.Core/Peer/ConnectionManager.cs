@@ -19,25 +19,21 @@ namespace Arise.FileSyncer.Core.Peer
         /// </summary>
         public event EventHandler<ConnectionVerifiedEventArgs> ConnectionVerified;
 
-        private readonly SyncerPeer owner;
         private readonly ConcurrentDictionary<Guid, SyncerConnection> connections;
 
-        public ConnectionManager(SyncerPeer owner)
+        public ConnectionManager()
         {
-            this.owner = owner;
             connections = new();
         }
 
         /// <summary>
         /// Adds a new connection.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <returns>Successful</returns>
-        public bool AddConnection(INetConnection connection)
+        public bool AddConnection(SyncerPeer peer, INetConnection connection)
         {
             if (connection == null) return false;
 
-            SyncerConnection syncerConnection = new(owner, connection);
+            SyncerConnection syncerConnection = new(peer, connection);
             bool added = connections.TryAdd(connection.Id, syncerConnection);
 
             if (added)
@@ -57,7 +53,6 @@ namespace Arise.FileSyncer.Core.Peer
         /// Removes a connection.
         /// </summary>
         /// <param name="id">The ID of the connection. (Remote Device ID)</param>
-        /// <returns>Successful</returns>
         public bool RemoveConnection(Guid id)
         {
             bool removed = connections.TryRemove(id, out SyncerConnection syncerConnection);

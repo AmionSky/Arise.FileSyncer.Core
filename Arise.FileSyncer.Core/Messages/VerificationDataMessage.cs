@@ -17,7 +17,7 @@ namespace Arise.FileSyncer.Core.Messages
         {
             var deviceKeys = connection.Owner.DeviceKeys;
 
-            if (deviceKeys.TryGetVerificationKey(connection.GetRemoteDeviceId(), out Guid key))
+            if (deviceKeys.GetVerificationKey(connection.GetRemoteDeviceId(), out Guid key))
             {
                 var settings = connection.Owner.Settings;
 
@@ -41,7 +41,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Process(SyncerConnection con)
         {
-            if (con.Owner.DeviceKeys.TryGetVerificationKey(con.GetRemoteDeviceId(), out Guid key)
+            if (con.Owner.DeviceKeys.GetVerificationKey(con.GetRemoteDeviceId(), out Guid key)
                 && Security.KeyGenerator(key, con.GetRemoteDeviceId()) == Key)
             {
                 Log.Info("Verification successful");

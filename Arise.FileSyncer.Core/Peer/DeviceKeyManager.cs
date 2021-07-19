@@ -17,7 +17,7 @@ namespace Arise.FileSyncer.Core.Peer
         /// Gets the verification key for the specified device
         /// </summary>
         /// <param name="deviceId">Remote device ID</param>
-        public bool TryGetVerificationKey(Guid deviceId, out Guid verificationKey)
+        public bool GetVerificationKey(Guid deviceId, out Guid verificationKey)
         {
             return deviceKeys.TryGetValue(deviceId, out verificationKey);
         }
