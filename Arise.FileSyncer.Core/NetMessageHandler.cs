@@ -126,10 +126,10 @@ namespace Arise.FileSyncer.Core
         }
 
         #region Dispose
-
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -142,11 +142,9 @@ namespace Arise.FileSyncer.Core
                 {
                     exitReceiver = true;
                     sender.Complete();
-                    Connection.Dispose();
                 }
             }
         }
-
         #endregion
     }
 }

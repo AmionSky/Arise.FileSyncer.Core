@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class PeerProfiles
+    public class ProfileManager
     {
         /// <summary>
         /// Called when a profile got changed or updated.
@@ -39,7 +39,7 @@ namespace Arise.FileSyncer.Core.Peer
         // Profile ID, Profile Data
         private readonly ConcurrentDictionary<Guid, SyncProfile> profiles;
 
-        public PeerProfiles()
+        public ProfileManager()
         {
             profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
         }

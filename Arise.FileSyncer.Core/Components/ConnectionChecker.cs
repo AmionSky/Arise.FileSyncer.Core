@@ -40,6 +40,7 @@ namespace Arise.FileSyncer.Core.Components
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

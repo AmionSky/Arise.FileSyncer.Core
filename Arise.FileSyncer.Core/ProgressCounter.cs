@@ -1,14 +1,19 @@
+using System;
 using System.Threading;
 
 namespace Arise.FileSyncer.Core
 {
     public class ProgressCounter : ISyncProgress
     {
-        public bool Indeterminate { get => indeterminate; internal set => indeterminate = value; }
+        public bool Indeterminate
+        {
+            get => Interlocked.Read(ref indeterminate) == 1;
+            set => Interlocked.Exchange(ref indeterminate, Convert.ToInt64(value));
+        }
         public long Current => Interlocked.Read(ref currentValue);
         public long Maximum => Interlocked.Read(ref maximumValue);
 
-        private volatile bool indeterminate = true;
+        private long indeterminate = 1; // true
         private long currentValue = 0;
         private long maximumValue = 0;
 

@@ -34,38 +34,34 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         public bool AllowPairing
         {
-            get => Interlocked.Read(ref _allowPairing) == 1;
-            set => Interlocked.Exchange(ref _allowPairing, Convert.ToInt64(value));
+            get => Interlocked.Read(ref allowPairing) == 1;
+            set => Interlocked.Exchange(ref allowPairing, Convert.ToInt64(value));
         }
 
         /// <summary>
         /// Manager of the peer's connections
         /// </summary>
-        public PeerConnections Connections { get; }
-
+        public ConnectionManager Connections { get; }
         /// <summary>
         /// Manager of paired devices keys
         /// </summary>
-        public PeerDeviceKeys DeviceKeys { get; }
-
+        public DeviceKeyManager DeviceKeys { get; }
         /// <summary>
         /// Manager of saved profiles
         /// </summary>
-        public PeerProfiles Profiles { get; }
+        public ProfileManager Profiles { get; }
+        /// <summary>
+        /// The plugin manager class.
+        /// </summary>
+        public PluginManager Plugins { get; }
 
         /// <summary>
         /// The peer settings class.
         /// </summary>
         public SyncerPeerSettings Settings { get; }
 
-        /// <summary>
-        /// The plugin manager class.
-        /// </summary>
-        public PluginManager Plugins { get; }
-
         private readonly Lazy<FileBuilder> fileBuilder;
-
-        private long _allowPairing = 0;
+        private long allowPairing = 0;
 
         /// <summary>
         /// Creates a new peer with the specified settings.
@@ -75,10 +71,9 @@ namespace Arise.FileSyncer.Core
             Settings = settings;
             AllowPairing = false;
 
-            Connections = new PeerConnections(this);
-            DeviceKeys = new PeerDeviceKeys();
-            Profiles = new PeerProfiles();
-
+            Connections = new ConnectionManager(this);
+            DeviceKeys = new DeviceKeyManager();
+            Profiles = new ProfileManager();
             Plugins = new PluginManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
@@ -162,10 +157,6 @@ namespace Arise.FileSyncer.Core
             return fileBuilder.Value;
         }
 
-
-
-
-
         internal virtual void OnPairingRequest(PairingRequestEventArgs e)
         {
             PairingRequest?.Invoke(this, e);
@@ -180,7 +171,6 @@ namespace Arise.FileSyncer.Core
         {
             Task.Run(() => FileBuilt?.Invoke(this, e));
         }
-
 
         #region IDisposable Support
         private bool disposedValue;

@@ -15,7 +15,7 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestAddProfile()
         {
-            PeerProfiles localProfiles = new();
+            ProfileManager localProfiles = new();
             localProfiles.AddProfile(id1, new SyncProfile());
 
             Assert.IsTrue(localProfiles.Ids.Contains(id1));
@@ -25,7 +25,7 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestRemoveProfile()
         {
-            PeerProfiles localProfiles = new();
+            ProfileManager localProfiles = new();
             localProfiles.AddProfile(id1, new SyncProfile());
 
             Assert.IsTrue(localProfiles.RemoveProfile(id1));
@@ -36,7 +36,7 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestGetProfileIds_Zero()
         {
-            PeerProfiles emtpyProfiles = new();
+            ProfileManager emtpyProfiles = new();
             Assert.AreEqual(0, emtpyProfiles.Count);
         }
 
@@ -70,9 +70,9 @@ namespace Arise.FileSyncer.Core.Test
             Assert.IsNull(profile);
         }
 
-        private PeerProfiles CreateProfiles()
+        private ProfileManager CreateProfiles()
         {
-            PeerProfiles profiles = new();
+            ProfileManager profiles = new();
             profiles.AddProfile(id1, new SyncProfile());
             profiles.AddProfile(id2, new SyncProfile());
             profiles.AddProfile(id3, new SyncProfile());

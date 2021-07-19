@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class PeerConnections : IDisposable
+    public class ConnectionManager : IDisposable
     {
         /// <summary>
         /// Called when a new connection is successfully added.
@@ -22,7 +22,7 @@ namespace Arise.FileSyncer.Core.Peer
         private readonly SyncerPeer owner;
         private readonly ConcurrentDictionary<Guid, SyncerConnection> connections;
 
-        public PeerConnections(SyncerPeer owner)
+        public ConnectionManager(SyncerPeer owner)
         {
             this.owner = owner;
             connections = new();

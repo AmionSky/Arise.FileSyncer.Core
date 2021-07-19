@@ -103,7 +103,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Update the LastSyncDate to 'Now' and call event
         /// </summary>
-        internal void UpdateLastSyncDate(PeerProfiles peerProfiles, Guid id)
+        internal void UpdateLastSyncDate(ProfileManager peerProfiles, Guid id)
         {
             LastSyncDate = DateTime.Now;
             peerProfiles.OnProfileChanged(id, this);

@@ -3,12 +3,12 @@ using System.Collections.Concurrent;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class PeerDeviceKeys
+    public class DeviceKeyManager
     {
         // (Remote Device Id, Verification Key)
         private readonly ConcurrentDictionary<Guid, Guid> deviceKeys;
 
-        public PeerDeviceKeys()
+        public DeviceKeyManager()
         {
             deviceKeys = new ConcurrentDictionary<Guid, Guid>(1, 0);
         }
