@@ -37,7 +37,7 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 con.DisplayName = DisplayName;
                 con.SupportTimestamp = SupportTimestamp;
-                con.Owner.OnConnectionVerified(new ConnectionVerifiedEventArgs(con.GetRemoteDeviceId(), DisplayName));
+                con.Owner.Connections.OnConnectionVerified(con.GetRemoteDeviceId(), DisplayName);
                 Log.Verbose("Sending Initialization Data");
                 con.Send(new SyncInitializationMessage(con.Owner, ProfileIds));
             }

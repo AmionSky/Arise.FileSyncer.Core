@@ -61,7 +61,7 @@ namespace Arise.FileSyncer.Core.FileSync
         private int builderLength = 0;
         private Guid _writerFileId = Guid.Empty;
         private readonly object _writerFileIdLock = new();
-        private bool disposed = false;
+        
 
         public FileBuilder(SyncerPeer owner)
         {
@@ -70,7 +70,7 @@ namespace Arise.FileSyncer.Core.FileSync
             builder = new ChannelWorker<FileMessageBase>(true, FileBuilderTask);
             fileInfos = new ConcurrentDictionary<Guid, BuilderFileInfo>(1, 4);
 
-            owner.ConnectionRemoved += Owner_ConnectionRemoved;
+            owner.Connections.ConnectionRemoved += Owner_ConnectionRemoved;
         }
 
         public void MessageToQueue(FileMessageBase message)
@@ -170,7 +170,7 @@ namespace Arise.FileSyncer.Core.FileSync
                     }
                 }
 
-                if (owner.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection iConnection))
+                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection iConnection))
                 {
                     SyncerConnection connection = (SyncerConnection)iConnection;
                     connection.Send(new FileChunkRequestMessage());
@@ -252,7 +252,7 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 Log.Info($"{this}: Remote error in file send");
 
-                if (owner.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection connection))
+                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection connection))
                 {
                     connection.Progress.RemoveProgress(fileInfo.WrittenSize);
                     connection.Progress.RemoveMaximum(fileInfo.FileSize);
@@ -300,22 +300,16 @@ namespace Arise.FileSyncer.Core.FileSync
             fileInfos.TryRemove(message.FileId, out var _);
         }
 
-        //----------------------------------------------------------------
         #region Dispose
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!disposedValue)
             {
-                disposed = true;
-
                 if (disposing)
                 {
+                    // Dispose managed state (managed objects)
                     builder.Complete();
 
                     if (writerStream != null)
@@ -324,11 +318,21 @@ namespace Arise.FileSyncer.Core.FileSync
                         writerStream = null;
                     }
 
-                    owner.ConnectionRemoved -= Owner_ConnectionRemoved;
+                    owner.Connections.ConnectionRemoved -= Owner_ConnectionRemoved;
                 }
+
+                // Free unmanaged resources (unmanaged objects) and override finalizer
+                // Set large fields to null
+                disposedValue = true;
             }
         }
 
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
         #endregion
     }
 }

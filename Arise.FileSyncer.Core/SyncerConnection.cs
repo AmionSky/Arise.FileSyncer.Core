@@ -82,7 +82,7 @@ namespace Arise.FileSyncer.Core
 
         public void Disconnect()
         {
-            Owner.RemoveConnection(GetRemoteDeviceId());
+            Owner.Connections.RemoveConnection(GetRemoteDeviceId());
         }
 
         public bool IsSyncing()

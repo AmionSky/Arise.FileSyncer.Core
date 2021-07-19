@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Messages;
+using Arise.FileSyncer.Core.Peer;
 using Arise.FileSyncer.Core.Plugins;
 
 namespace Arise.FileSyncer.Core
@@ -22,20 +23,7 @@ namespace Arise.FileSyncer.Core
         public static bool SupportTimestamp = true;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
-        /// <summary>
-        /// Called when a new connection is successfully added.
-        /// </summary>
-        public event EventHandler<ConnectionEventArgs> ConnectionAdded;
-
-        /// <summary>
-        /// Called when a connection got verified and we know basic information about the remote device.
-        /// </summary>
-        public event EventHandler<ConnectionVerifiedEventArgs> ConnectionVerified;
-
-        /// <summary>
-        /// Called when a connection is successfully removed.
-        /// </summary>
-        public event EventHandler<ConnectionEventArgs> ConnectionRemoved;
+        
 
         /// <summary>
         /// [Async] Called when a profile got changed or updated.
@@ -88,6 +76,11 @@ namespace Arise.FileSyncer.Core
         }
 
         /// <summary>
+        /// Manager of the peer's connections
+        /// </summary>
+        public PeerConnections Connections { get; }
+
+        /// <summary>
         /// The peer settings class.
         /// </summary>
         public SyncerPeerSettings Settings { get; }
@@ -98,7 +91,7 @@ namespace Arise.FileSyncer.Core
         public PluginManager Plugins { get; }
 
         private readonly Lazy<FileBuilder> fileBuilder;
-        private readonly ConcurrentDictionary<Guid, SyncerConnection> connections;
+        
         private long _allowPairing = 0;
 
         /// <summary>
@@ -109,81 +102,10 @@ namespace Arise.FileSyncer.Core
             Settings = settings;
             AllowPairing = false;
 
+            Connections = new PeerConnections(this);
             Plugins = new PluginManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
-            connections = new ConcurrentDictionary<Guid, SyncerConnection>();
-        }
-
-        /// <summary>
-        /// Adds a new connection.
-        /// </summary>
-        /// <param name="connection"></param>
-        /// <returns>Successful</returns>
-        public bool AddConnection(INetConnection connection)
-        {
-            if (connection == null) return false;
-
-            SyncerConnection syncerConnection = new(this, connection);
-            bool added = connections.TryAdd(connection.Id, syncerConnection);
-
-            if (added)
-            {
-                OnConnectionAdded(connection.Id);
-                syncerConnection.Start();
-            }
-            else
-            {
-                syncerConnection.Dispose();
-            }
-
-            return added;
-        }
-
-        /// <summary>
-        /// Removes a connection.
-        /// </summary>
-        /// <param name="id">The ID of the connection. (Remote Device ID)</param>
-        /// <returns>Successful</returns>
-        public bool RemoveConnection(Guid id)
-        {
-            bool removed = connections.TryRemove(id, out SyncerConnection syncerConnection);
-
-            if (removed)
-            {
-                syncerConnection.Dispose();
-                OnConnectionRemoved(id);
-            }
-
-            return removed;
-        }
-
-        /// <summary>
-        /// Returns an array of the connection IDs.
-        /// </summary>
-        /// <returns>Connections</returns>
-        public ICollection<Guid> GetConnectionIds()
-        {
-            return connections.Keys;
-        }
-
-        /// <summary>
-        /// Returns the number of connections.
-        /// </summary>
-        /// <returns>The number of connections</returns>
-        public int GetConnectionCount()
-        {
-            return connections.Count;
-        }
-
-        /// <summary>
-        /// Checks if the connection specified by the ID exists already.
-        /// </summary>
-        /// <param name="id">The ID of the connection. (Remote Device ID)</param>
-        /// <returns>Connection already exists</returns>
-        public bool DoesConnectionExist(Guid id)
-        {
-            return connections.ContainsKey(id);
         }
 
         /// <summary>
@@ -196,25 +118,12 @@ namespace Arise.FileSyncer.Core
                 if (!fileBuilder.Value.IsBuildQueueEmpty()) return true;
             }
 
-            foreach (var connectionKV in connections)
+            foreach (var connection in Connections.GetConnections())
             {
-                if (connectionKV.Value.IsSyncing()) return true;
+                if (connection.IsSyncing()) return true;
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Tries getting a connection.
-        /// </summary>
-        /// <param name="id">ID of the connection</param>
-        /// <param name="connection">The connection as a public interface</param>
-        /// <returns></returns>
-        public bool TryGetConnection(Guid id, out ISyncerConnection connection)
-        {
-            bool success = connections.TryGetValue(id, out SyncerConnection fullConnection);
-            connection = fullConnection;
-            return success;
         }
 
         /// <summary>
@@ -323,8 +232,8 @@ namespace Arise.FileSyncer.Core
 
         internal bool TrySend(Guid connectionId, NetMessage message)
         {
-            bool found = connections.TryGetValue(connectionId, out SyncerConnection connection);
-            if (found) connection.Send(message);
+            bool found = Connections.TryGetConnection(connectionId, out ISyncerConnection connection);
+            if (found) (connection as SyncerConnection).Send(message);
             return found;
         }
 
@@ -333,20 +242,7 @@ namespace Arise.FileSyncer.Core
             return fileBuilder.Value;
         }
 
-        internal virtual void OnConnectionAdded(Guid connectionId)
-        {
-            ConnectionAdded?.Invoke(this, new ConnectionEventArgs(connectionId));
-        }
-
-        internal virtual void OnConnectionVerified(ConnectionVerifiedEventArgs e)
-        {
-            ConnectionVerified?.Invoke(this, e);
-        }
-
-        internal virtual void OnConnectionRemoved(Guid connectionId)
-        {
-            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs(connectionId));
-        }
+        
 
         internal virtual void OnProfileChanged(ProfileEventArgs e)
         {
@@ -404,12 +300,7 @@ namespace Arise.FileSyncer.Core
                         fileBuilder.Value.Dispose();
                     }
 
-                    foreach (KeyValuePair<Guid, SyncerConnection> con in connections)
-                    {
-                        con.Value.Dispose();
-                    }
-
-                    connections.Clear();
+                    Connections.Dispose();
                 }
 
                 // Free unmanaged resources (unmanaged objects) and override finalizer
