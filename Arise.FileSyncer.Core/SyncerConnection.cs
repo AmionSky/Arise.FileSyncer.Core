@@ -165,53 +165,6 @@ namespace Arise.FileSyncer.Core
             }
 
             Log.Info("Processing Sync Profile: " + remoteProfile.Id);
-            /*
-            string[] directories = null;
-            IList<string> filesRelative = null;
-            IList<string> filesAbsolute = null;
-
-            
-            // Plugin
-            bool usedPlugin = false;
-            if (!string.IsNullOrEmpty(localProfile.Plugin))
-            {
-                if (Owner.Plugins.TryGet(localProfile.Plugin, out Plugin plugin))
-                {
-                    if (plugin.Features.HasFlag(PluginFeatures.ModifySendData))
-                    {
-                        usedPlugin = true;
-
-                        Plugin.MSD_IN dataIn = new Plugin.MSD_IN()
-                        {
-                            Connection = this,
-                            Profile = localProfile,
-                            LocalState = state,
-                            RemoteState = remoteProfile.State,
-                        };
-
-                        Plugin.MSD_OUT values = await plugin.ModifySendDataAsync(dataIn);
-
-                        directories = values.Directories;
-                        filesRelative = values.Files;
-                        filesAbsolute = values.Redirects;
-                    }
-                }
-                else
-                {
-                    Log.Warning($"Plugin '{localProfile.Plugin}' for profile '{remoteProfile.Id}' is unavailable. Skipping profile...");
-                    Owner.OnProfileError(new ProfileErrorEventArgs(remoteProfile.Id, localProfile, SyncProfileError.PluginUnavailable));
-                    return;
-                }
-            }
-
-            // If no plugin was used, execute default logic
-            if (!usedPlugin)
-            {
-                DirectoryTreeDifference delta = new DirectoryTreeDifference(state, remoteProfile.State, SupportTimestamp);
-                directories = delta.RemoteMissingDirectories.ToArray();
-                filesRelative = delta.RemoteMissingFiles;
-            }
-            */
 
             var delta = new DirectoryTreeDifference(state, remoteProfile.State, SupportTimestamp);
 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Messages;
 using Arise.FileSyncer.Core.Peer;
-using Arise.FileSyncer.Core.Plugins;
 
 namespace Arise.FileSyncer.Core
 {
@@ -50,10 +49,6 @@ namespace Arise.FileSyncer.Core
         /// Manager of saved profiles
         /// </summary>
         public ProfileManager Profiles { get; }
-        /// <summary>
-        /// The plugin manager class.
-        /// </summary>
-        public PluginManager Plugins { get; }
 
         /// <summary>
         /// The peer settings class.
@@ -74,7 +69,6 @@ namespace Arise.FileSyncer.Core
             Connections = new ConnectionManager(this);
             DeviceKeys = new DeviceKeyManager();
             Profiles = new ProfileManager();
-            Plugins = new PluginManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
         }

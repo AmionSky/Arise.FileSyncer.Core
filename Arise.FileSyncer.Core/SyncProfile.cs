@@ -53,10 +53,6 @@ namespace Arise.FileSyncer.Core
         /// The base directory of the files to sync
         /// </summary>
         public string RootDirectory { get => rootDirectory; init => rootDirectory = value; }
-        /// <summary>
-        /// (Unused) Sync plugin to use
-        /// </summary>
-        public string Plugin { get => plugin; init => plugin = value; }
 
         private Guid key;
         private string name;
@@ -68,7 +64,6 @@ namespace Arise.FileSyncer.Core
         private DateTime creationDate;
         private bool skipHidden;
         private string rootDirectory;
-        private string plugin;
 
         public SyncProfile()
         {
@@ -82,7 +77,6 @@ namespace Arise.FileSyncer.Core
             CreationDate = DateTime.Now;
             SkipHidden = true;
             RootDirectory = string.Empty;
-            Plugin = string.Empty;
         }
 
         public SyncProfile(SyncProfile profile)
@@ -97,7 +91,6 @@ namespace Arise.FileSyncer.Core
             CreationDate = profile.CreationDate;
             SkipHidden = profile.SkipHidden;
             RootDirectory = profile.RootDirectory;
-            Plugin = profile.Plugin;
         }
 
         /// <summary>
@@ -129,7 +122,6 @@ namespace Arise.FileSyncer.Core
             creationDate = stream.ReadDateTime();
             skipHidden = stream.ReadBoolean();
             rootDirectory = stream.ReadString();
-            plugin = stream.ReadString();
         }
 
         public void Serialize(Stream stream)
@@ -144,7 +136,6 @@ namespace Arise.FileSyncer.Core
             stream.WriteAFS(CreationDate);
             stream.WriteAFS(SkipHidden);
             stream.WriteAFS(RootDirectory);
-            stream.WriteAFS(Plugin);
         }
     }
 }
