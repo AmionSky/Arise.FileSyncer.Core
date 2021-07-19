@@ -9,59 +9,97 @@ namespace Arise.FileSyncer.Core
     public class SyncProfile : IBinarySerializable
     {
         /// <summary>
-        /// Verification key
+        /// Profile verification key
         /// </summary>
-        public Guid Key { get; private set; }
-
-        public string Name { get; private set; }
-        public bool Activated { get; private set; }
-
-        public bool AllowSend { get; private set; }
-        public bool AllowReceive { get; private set; }
-        public bool AllowDelete { get; private set; }
-
-        private long _lastSyncDate = 0;
+        public Guid Key { get => key; init => key = value; }
+        /// <summary>
+        /// User given name of the profile
+        /// </summary>
+        public string Name { get => name; init => name = value; }
+        /// <summary>
+        /// Is syncing for this profile enabled
+        /// </summary>
+        public bool Activated { get => activated; init => activated = value; }
+        /// <summary>
+        /// Allows sending files from this device
+        /// </summary>
+        public bool AllowSend { get => allowSend; init => allowSend = value; }
+        /// <summary>
+        /// Allows receiving files from remote devices
+        /// </summary>
+        public bool AllowReceive { get => allowReceive; init => allowReceive = value; }
+        /// <summary>
+        /// Allows deletion requests from remote devices
+        /// </summary>
+        public bool AllowDelete { get => allowDelete; init => allowDelete = value; }
+        /// <summary>
+        /// Last time the profile had a successful syncing operation
+        /// </summary>
         public DateTime LastSyncDate
         {
-            get => new(Interlocked.Read(ref _lastSyncDate));
-            set => Interlocked.Exchange(ref _lastSyncDate, value.Ticks);
+            get => new(Interlocked.Read(ref lastSyncDate));
+            private set => Interlocked.Exchange(ref lastSyncDate, value.Ticks);
         }
+        /// <summary>
+        /// The date and time the profile was created
+        /// </summary>
+        public DateTime CreationDate { get => creationDate; init => creationDate = value; }
+        /// <summary>
+        /// Should skip syncing hidden files
+        /// </summary>
+        public bool SkipHidden { get => skipHidden; init => skipHidden = value; }
+        /// <summary>
+        /// The base directory of the files to sync
+        /// </summary>
+        public string RootDirectory { get => rootDirectory; init => rootDirectory = value; }
+        /// <summary>
+        /// (Unused) Sync plugin to use
+        /// </summary>
+        public string Plugin { get => plugin; init => plugin = value; }
 
-        public DateTime CreationDate { get; private set; }
+        private Guid key;
+        private string name;
+        private bool activated;
+        private bool allowSend;
+        private bool allowReceive;
+        private bool allowDelete;
+        private long lastSyncDate = 0;
+        private DateTime creationDate;
+        private bool skipHidden;
+        private string rootDirectory;
+        private string plugin;
 
-        public bool SkipHidden { get; private set; }
-        public string RootDirectory { get; private set; }
-
-        public string Plugin { get; private set; }
-
-        public SyncProfile() { }
-
-        private SyncProfile(Creator creator)
+        public SyncProfile()
         {
-            Key = creator.Key;
-
-            Name = creator.Name;
-            Activated = creator.Activated;
-
-            AllowSend = creator.AllowSend;
-            AllowReceive = creator.AllowReceive;
-            AllowDelete = creator.AllowDelete;
-
-            LastSyncDate = creator.LastSyncDate;
-            CreationDate = creator.CreationDate;
-
-            SkipHidden = creator.SkipHidden;
-            RootDirectory = creator.RootDirectory;
-
-            Plugin = creator.Plugin;
+            Key = Guid.Empty;
+            Name = string.Empty;
+            Activated = true;
+            AllowSend = false;
+            AllowReceive = false;
+            AllowDelete = false;
+            LastSyncDate = DateTime.Now;
+            CreationDate = DateTime.Now;
+            SkipHidden = true;
+            RootDirectory = string.Empty;
+            Plugin = string.Empty;
         }
 
-        public static implicit operator SyncProfile(Creator creator)
+        public SyncProfile(SyncProfile profile)
         {
-            return new SyncProfile(creator);
+            Key = profile.Key;
+            Name = profile.Name;
+            Activated = profile.Activated;
+            AllowSend = profile.AllowSend;
+            AllowReceive = profile.AllowReceive;
+            AllowDelete = profile.AllowDelete;
+            LastSyncDate = profile.LastSyncDate;
+            CreationDate = profile.CreationDate;
+            SkipHidden = profile.SkipHidden;
+            RootDirectory = profile.RootDirectory;
+            Plugin = profile.Plugin;
         }
 
-        public void UpdateLastSyncDate(SyncerPeer peer, Guid id)
+        internal void UpdateLastSyncDate(SyncerPeer peer, Guid id)
         {
             LastSyncDate = DateTime.Now;
             peer.OnProfileChanged(new ProfileEventArgs(id, this));
@@ -74,105 +112,32 @@ namespace Arise.FileSyncer.Core
 
         public void Deserialize(Stream stream)
         {
-            Key = stream.ReadGuid();
-
-            Name = stream.ReadString();
-            Activated = stream.ReadBoolean();
-
-            AllowSend = stream.ReadBoolean();
-            AllowReceive = stream.ReadBoolean();
-            AllowDelete = stream.ReadBoolean();
-
-            LastSyncDate = stream.ReadDateTime();
-            CreationDate = stream.ReadDateTime();
-
-            SkipHidden = stream.ReadBoolean();
-            RootDirectory = stream.ReadString();
-
-            Plugin = stream.ReadString();
+            key = stream.ReadGuid();
+            name = stream.ReadString();
+            activated = stream.ReadBoolean();
+            allowSend = stream.ReadBoolean();
+            allowReceive = stream.ReadBoolean();
+            allowDelete = stream.ReadBoolean();
+            lastSyncDate = stream.ReadDateTime().Ticks;
+            creationDate = stream.ReadDateTime();
+            skipHidden = stream.ReadBoolean();
+            rootDirectory = stream.ReadString();
+            plugin = stream.ReadString();
         }
 
         public void Serialize(Stream stream)
         {
             stream.WriteAFS(Key);
-
             stream.WriteAFS(Name);
             stream.WriteAFS(Activated);
-
             stream.WriteAFS(AllowSend);
             stream.WriteAFS(AllowReceive);
             stream.WriteAFS(AllowDelete);
-
             stream.WriteAFS(LastSyncDate);
             stream.WriteAFS(CreationDate);
-
             stream.WriteAFS(SkipHidden);
             stream.WriteAFS(RootDirectory);
-
             stream.WriteAFS(Plugin);
-        }
-
-        public class Creator
-        {
-            /// <summary>
-            /// Verification key
-            /// </summary>
-            public Guid Key { get; set; }
-
-            public string Name { get; set; }
-            public bool Activated { get; set; }
-
-            public bool AllowSend { get; set; }
-            public bool AllowReceive { get; set; }
-            public bool AllowDelete { get; set; }
-
-            public DateTime LastSyncDate { get; set; }
-            public DateTime CreationDate { get; set; }
-
-            public bool SkipHidden { get; set; }
-            public string RootDirectory { get; set; }
-
-            public string Plugin { get; set; }
-
-            public Creator()
-            {
-                Key = Guid.Empty;
-
-                Name = string.Empty;
-                Activated = true;
-
-                AllowSend = false;
-                AllowReceive = false;
-                AllowDelete = false;
-
-                LastSyncDate = DateTime.Now;
-                CreationDate = DateTime.Now;
-
-                SkipHidden = true;
-                RootDirectory = string.Empty;
-
-                Plugin = string.Empty;
-            }
-
-            public Creator(SyncProfile profile)
-            {
-                Key = profile.Key;
-
-                Name = profile.Name;
-                Activated = profile.Activated;
-
-                AllowSend = profile.AllowSend;
-                AllowReceive = profile.AllowReceive;
-                AllowDelete = profile.AllowDelete;
-
-                LastSyncDate = profile.LastSyncDate;
-                CreationDate = profile.CreationDate;
-
-                SkipHidden = profile.SkipHidden;
-                RootDirectory = profile.RootDirectory;
-
-                Plugin = profile.Plugin;
-            }
         }
     }
 }

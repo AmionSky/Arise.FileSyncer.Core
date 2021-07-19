@@ -114,7 +114,7 @@ namespace Arise.FileSyncer.Core.Test
         {
             using SyncerPeer peer = new(CreateSettings());
             Assert.IsTrue(peer.AddConnection(new DummyConnection(dummyId1)));
-            peer.AddProfile(dummyId1, new SyncProfile.Creator() { AllowSend = true, RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
+            peer.AddProfile(dummyId1, new SyncProfile() { AllowSend = true, RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
             Assert.IsTrue(peer.SyncProfile(dummyId1, dummyId1));
         }
 
@@ -122,7 +122,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestSyncProfile_NonExisting()
         {
             using SyncerPeer peer = new(CreateSettings());
-            peer.AddProfile(dummyId1, new SyncProfile.Creator() { RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
+            peer.AddProfile(dummyId1, new SyncProfile() { RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
             Assert.IsFalse(peer.SyncProfile(dummyId1, dummyId1));
         }
 
