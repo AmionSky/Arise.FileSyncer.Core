@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Arise.FileSyncer.Core.FileSync;
+using Arise.FileSyncer.Core.Peer;
 using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
@@ -99,12 +100,18 @@ namespace Arise.FileSyncer.Core
             Plugin = profile.Plugin;
         }
 
-        internal void UpdateLastSyncDate(SyncerPeer peer, Guid id)
+        /// <summary>
+        /// Update the LastSyncDate to 'Now' and call event
+        /// </summary>
+        internal void UpdateLastSyncDate(PeerProfiles peerProfiles, Guid id)
         {
             LastSyncDate = DateTime.Now;
-            peer.OnProfileChanged(new ProfileEventArgs(id, this));
+            peerProfiles.OnProfileChanged(id, this);
         }
 
+        /// <summary>
+        /// Generate file-system state for sync
+        /// </summary>
         internal bool GenerateState(out FileSystemItem[] state)
         {
             return DirectoryTreeQuery.GenerateTree(out state, RootDirectory, SkipHidden, FileBuilder.TemporaryFileExtension);

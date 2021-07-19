@@ -19,7 +19,7 @@ namespace Arise.FileSyncer.Core.Messages
 
             foreach (var profileId in receivedIds)
             {
-                if (peer.Profiles.TryGetProfile(profileId, out var profile))
+                if (peer.Profiles.GetProfile(profileId, out var profile))
                 {
                     if (profile.Activated && profile.AllowReceive)
                     {
@@ -29,7 +29,7 @@ namespace Arise.FileSyncer.Core.Messages
                         }
                         else
                         {
-                            peer.OnProfileError(new ProfileErrorEventArgs(profileId, profile, SyncProfileError.FailedToGetState));
+                            peer.Profiles.OnProfileError(profileId, profile, SyncProfileError.FailedToGetState);
                         }
                     }
                 }

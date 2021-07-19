@@ -27,7 +27,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Process(SyncerConnection con)
         {
-            con.Owner.OnProfileReceived(new ProfileReceivedEventArgs(con.GetRemoteDeviceId(), this));
+            con.Owner.Profiles.OnProfileReceived(new ProfileReceivedEventArgs(con.GetRemoteDeviceId(), this));
         }
 
         public override void Deserialize(Stream stream)

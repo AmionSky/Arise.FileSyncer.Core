@@ -186,7 +186,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private void Case_FileInfoStart(FileStartMessage message)
         {
-            if (!owner.Profiles.TryGetProfile(message.ProfileId, out var profile))
+            if (!owner.Profiles.GetProfile(message.ProfileId, out var profile))
             {
                 Log.Warning($"{this}: Profile does not exist: {message.ProfileId}");
                 return;
@@ -270,20 +270,20 @@ namespace Arise.FileSyncer.Core.FileSync
                 if (Utility.FileRename(fileInfo.ProfileId, fileInfo.RootPath, relativeTempPath, Path.GetFileName(fileInfo.RelativePath)))
                 {
                     //If the rename was successful -> Set file times if it supports timestamps
-                    if (!SyncerPeer.SupportTimestamp ||
-                        Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
+                    if (owner.Settings.SupportTimestamp)
                     {
-                        //If the info update was successful
-                        if (owner.Profiles.TryGetProfile(fileInfo.ProfileId, out var profile))
+                        if (!Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
                         {
-                            profile.UpdateLastSyncDate(owner, fileInfo.ProfileId);
-                        }
-                        else
-                        {
-                            Log.Warning($"{this}: Profile does not exist: {fileInfo.ProfileId}");
+                            Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
                         }
                     }
-                    else Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
+
+                    //If the info update was successful
+                    if (owner.Profiles.GetProfile(fileInfo.ProfileId, out var profile))
+                    {
+                        profile.UpdateLastSyncDate(owner.Profiles, fileInfo.ProfileId);
+                    }
+                    else Log.Warning($"{this}: Profile does not exist: {fileInfo.ProfileId}");
 
                     // Send event that the file has been built.
                     owner.OnFileBuilt(new FileBuiltEventArgs(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath));

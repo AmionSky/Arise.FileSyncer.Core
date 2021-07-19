@@ -11,7 +11,6 @@ namespace Arise.FileSyncer.Core.Messages
 
         public string DisplayName { get; set; }
         public bool SupportTimestamp { get; set; }
-
         public Guid[] ProfileIds { get; set; }
 
         public override NetMessageType MessageType => NetMessageType.VerificationResponse;
@@ -26,7 +25,7 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 Success = success;
                 DisplayName = peer.Settings.DisplayName;
-                SupportTimestamp = SyncerPeer.SupportTimestamp;
+                SupportTimestamp = peer.Settings.SupportTimestamp;
                 ProfileIds = peer.Profiles.Ids.ToArray();
             }
         }
@@ -55,7 +54,6 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 DisplayName = stream.ReadString();
                 SupportTimestamp = stream.ReadBoolean();
-
                 ProfileIds = stream.ReadGuidArray();
             }
         }
@@ -68,7 +66,6 @@ namespace Arise.FileSyncer.Core.Messages
             {
                 stream.WriteAFS(DisplayName);
                 stream.WriteAFS(SupportTimestamp);
-
                 stream.WriteAFS(ProfileIds);
             }
         }

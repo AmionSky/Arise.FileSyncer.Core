@@ -9,14 +9,14 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestVerify_Ok()
         {
-            var settings = new SyncerPeerSettings(Guid.NewGuid(), "Test");
+            var settings = new SyncerPeerSettings(Guid.NewGuid(), "Test", true);
             Assert.IsTrue(settings.Verify());
         }
 
         [TestMethod]
         public void TestVerify_Fail()
         {
-            var settings = new SyncerPeerSettings(Guid.Empty, "Test");
+            var settings = new SyncerPeerSettings(Guid.Empty, "Test", true);
             Assert.IsFalse(settings.Verify());
         }
     }

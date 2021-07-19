@@ -1,47 +1,27 @@
 using System;
+using Arise.FileSyncer.Core.Messages;
 
 namespace Arise.FileSyncer.Core
 {
     public class ConnectionEventArgs : EventArgs
     {
-        public Guid Id { get; }
-
-        public ConnectionEventArgs(Guid id)
-        {
-            Id = id;
-        }
+        public Guid Id { get; init; }
     }
 
     public class ConnectionVerifiedEventArgs : ConnectionEventArgs
     {
-        public string Name { get; }
-
-        public ConnectionVerifiedEventArgs(Guid id, string name) : base(id)
-        {
-            Name = name;
-        }
+        public string Name { get; init; }
     }
 
     public class ProfileEventArgs : EventArgs
     {
-        public Guid Id { get; }
-        public SyncProfile Profile { get; }
-
-        public ProfileEventArgs(Guid id, SyncProfile profile)
-        {
-            Id = id;
-            Profile = profile;
-        }
+        public Guid Id { get; init; }
+        public SyncProfile Profile { get; init; }
     }
 
     public class ProfileErrorEventArgs : ProfileEventArgs
     {
-        public SyncProfileError Error { get; }
-
-        public ProfileErrorEventArgs(Guid id, SyncProfile profile, SyncProfileError error) : base(id, profile)
-        {
-            Error = error;
-        }
+        public SyncProfileError Error { get; init; }
     }
 
     public class ProfileReceivedEventArgs : EventArgs
@@ -55,14 +35,14 @@ namespace Arise.FileSyncer.Core
         public DateTime CreationDate { get; }
         public bool SkipHidden { get; }
 
-        internal ProfileReceivedEventArgs(Guid remoteId, Messages.ProfileShareMessage msg)
+        internal ProfileReceivedEventArgs(Guid remoteId, ProfileShareMessage message)
         {
             RemoteId = remoteId;
-            Id = msg.Id;
-            Key = msg.Key;
-            Name = msg.Name;
-            CreationDate = msg.CreationDate;
-            SkipHidden = msg.SkipHidden;
+            Id = message.Id;
+            Key = message.Key;
+            Name = message.Name;
+            CreationDate = message.CreationDate;
+            SkipHidden = message.SkipHidden;
         }
     }
 

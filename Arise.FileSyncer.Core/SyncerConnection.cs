@@ -150,7 +150,7 @@ namespace Arise.FileSyncer.Core
 
         internal void StartProfileSync(SyncProfileState remoteProfile)
         {
-            bool exists = Owner.Profiles.TryGetProfile(remoteProfile.Id, out var localProfile);
+            bool exists = Owner.Profiles.GetProfile(remoteProfile.Id, out var localProfile);
 
             if (!exists || !localProfile.AllowSend || localProfile.Key != remoteProfile.Key)
             {
@@ -227,7 +227,7 @@ namespace Arise.FileSyncer.Core
             fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, delta.RemoteMissingFiles, null));
 
             // Update last sync date
-            localProfile.UpdateLastSyncDate(Owner, remoteProfile.Id);
+            localProfile.UpdateLastSyncDate(Owner.Profiles, remoteProfile.Id);
         }
 
         private void ProgressTimeout()

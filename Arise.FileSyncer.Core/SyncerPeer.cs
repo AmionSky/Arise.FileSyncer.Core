@@ -13,41 +13,6 @@ namespace Arise.FileSyncer.Core
     /// </summary>
     public class SyncerPeer : IDisposable
     {
-#pragma warning disable CA2211 // Non-constant fields should not be visible
-        // TODO: Move it to a more suitable location
-        /// <summary>
-        /// Is the local device supports file timestamp get and set.
-        /// </summary>
-        public static bool SupportTimestamp = true;
-#pragma warning restore CA2211 // Non-constant fields should not be visible
-
-
-
-        /// <summary>
-        /// [Async] Called when a profile got changed or updated.
-        /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileChanged;
-
-        /// <summary>
-        /// Called when a new profile got added.
-        /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileAdded;
-
-        /// <summary>
-        /// Called when a profile got removed.
-        /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileRemoved;
-
-        /// <summary>
-        /// Called when a profile encountered an error.
-        /// </summary>
-        public event EventHandler<ProfileErrorEventArgs> ProfileError;
-
-        /// <summary>
-        /// Called when a new profile got received from a remote device.
-        /// </summary>
-        public event EventHandler<ProfileReceivedEventArgs> ProfileReceived;
-
         /// <summary>
         /// Called when received a pairing request from a remote device.
         /// Containes callback to accept/refuse the request.
@@ -144,7 +109,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="profileId">ID of the profile to share</param>
         public bool ShareProfile(Guid connectionId, Guid profileId)
         {
-            if (Profiles.TryGetProfile(profileId, out var profile))
+            if (Profiles.GetProfile(profileId, out var profile))
             {
                 return TrySend(connectionId, new ProfileShareMessage(profileId, profile));
             }
@@ -160,7 +125,7 @@ namespace Arise.FileSyncer.Core
         /// <param name="isResponse">Is it a response message. Should always be false.</param>
         public bool SyncProfile(Guid connectionId, Guid profileId, bool isResponse = false)
         {
-            if (!Profiles.TryGetProfile(profileId, out var profile))
+            if (!Profiles.GetProfile(profileId, out var profile))
             {
                 return false;
             }
@@ -173,7 +138,7 @@ namespace Arise.FileSyncer.Core
 
                 if (profileState == null)
                 {
-                    OnProfileError(new ProfileErrorEventArgs(profileId, profile, SyncProfileError.FailedToGetState));
+                    Profiles.OnProfileError(profileId, profile, SyncProfileError.FailedToGetState);
                     return false;
                 }
             }
@@ -183,62 +148,6 @@ namespace Arise.FileSyncer.Core
             }
 
             return TrySend(connectionId, new SyncProfileMessage(profileState, isResponse));
-        }
-
-        /// <summary>
-        /// Adds a new profile to the peer settings.
-        /// </summary>
-        /// <param name="profileId">ID of the profile to add</param>
-        /// <param name="newProfile">The new profile</param>
-        public bool AddProfile(Guid profileId, SyncProfile newProfile)
-        {
-            if (Profiles.TryAdd(profileId, newProfile))
-            {
-                Log.Info($"Profile added: {newProfile.Name}");
-                OnProfileAdded(new ProfileEventArgs(profileId, newProfile));
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Removes a profile form the peer settings.
-        /// </summary>
-        /// <param name="profileId">ID of the profile to remove</param>
-        public bool RemoveProfile(Guid profileId)
-        {
-            if (Profiles.TryRemove(profileId, out var profile))
-            {
-                Log.Info($"Profile removed: {profile.Name}");
-                OnProfileRemoved(new ProfileEventArgs(profileId, profile));
-                return true;
-            }
-
-            Log.Warning($"Profile remove failed! ID: {profileId}");
-            return false;
-        }
-
-        /// <summary>
-        /// Updates a selected profile
-        /// </summary>
-        /// <param name="profileId">ID of the profile to update</param>
-        /// <param name="newProfile">Updated profile</param>
-        /// <returns></returns>
-        public bool UpdateProfile(Guid profileId, SyncProfile newProfile)
-        {
-            if (Profiles.TryGetProfile(profileId, out var profile))
-            {
-                if (Profiles.TryUpdate(profileId, newProfile, profile))
-                {
-                    Log.Info($"Profile updated: {profileId} - {newProfile.Name}");
-                    OnProfileChanged(new ProfileEventArgs(profileId, newProfile));
-                    return true;
-                }
-            }
-
-            Log.Warning($"Profile update failed! ID: {profileId}");
-            return false;
         }
 
         internal bool TrySend(Guid connectionId, NetMessage message)
@@ -255,30 +164,7 @@ namespace Arise.FileSyncer.Core
 
 
 
-        internal virtual void OnProfileChanged(ProfileEventArgs e)
-        {
-            Task.Run(() => ProfileChanged?.Invoke(this, e));
-        }
 
-        internal virtual void OnProfileAdded(ProfileEventArgs e)
-        {
-            ProfileAdded?.Invoke(this, e);
-        }
-
-        internal virtual void OnProfileRemoved(ProfileEventArgs e)
-        {
-            ProfileRemoved?.Invoke(this, e);
-        }
-
-        internal virtual void OnProfileError(ProfileErrorEventArgs e)
-        {
-            ProfileError?.Invoke(this, e);
-        }
-
-        internal virtual void OnProfileReceived(ProfileReceivedEventArgs e)
-        {
-            ProfileReceived?.Invoke(this, e);
-        }
 
         internal virtual void OnPairingRequest(PairingRequestEventArgs e)
         {

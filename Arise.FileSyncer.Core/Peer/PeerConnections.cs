@@ -121,17 +121,21 @@ namespace Arise.FileSyncer.Core.Peer
 
         private void OnConnectionAdded(Guid connectionId)
         {
-            ConnectionAdded?.Invoke(this, new ConnectionEventArgs(connectionId));
+            ConnectionAdded?.Invoke(this, new ConnectionEventArgs() { Id = connectionId });
         }
 
         private void OnConnectionRemoved(Guid connectionId)
         {
-            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs(connectionId));
+            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs() { Id = connectionId });
         }
 
         internal void OnConnectionVerified(Guid connectionId, string displayName)
         {
-            ConnectionVerified?.Invoke(this, new ConnectionVerifiedEventArgs(connectionId, displayName));
+            ConnectionVerified?.Invoke(this, new ConnectionVerifiedEventArgs()
+            {
+                Id = connectionId,
+                Name = displayName,
+            });
         }
 
         #region IDisposable Support

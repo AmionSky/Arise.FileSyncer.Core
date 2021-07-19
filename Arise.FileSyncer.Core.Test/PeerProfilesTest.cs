@@ -7,19 +7,30 @@ namespace Arise.FileSyncer.Core.Test
     [TestClass]
     public class PeerProfilesTest
     {
-        private readonly PeerProfiles profiles;
-
         private readonly Guid id1 = Guid.NewGuid();
         private readonly Guid id2 = Guid.NewGuid();
         private readonly Guid id3 = Guid.NewGuid();
         private readonly Guid id4 = Guid.NewGuid();
 
-        public PeerProfilesTest()
+        [TestMethod]
+        public void TestAddProfile()
         {
-            profiles = new();
-            profiles.TryAdd(id1, new SyncProfile());
-            profiles.TryAdd(id2, new SyncProfile());
-            profiles.TryAdd(id3, new SyncProfile());
+            PeerProfiles localProfiles = new();
+            localProfiles.AddProfile(id1, new SyncProfile());
+
+            Assert.IsTrue(localProfiles.Ids.Contains(id1));
+            Assert.IsFalse(localProfiles.Ids.Contains(id2));
+        }
+
+        [TestMethod]
+        public void TestRemoveProfile()
+        {
+            PeerProfiles localProfiles = new();
+            localProfiles.AddProfile(id1, new SyncProfile());
+
+            Assert.IsTrue(localProfiles.RemoveProfile(id1));
+            Assert.IsFalse(localProfiles.RemoveProfile(id1));
+            Assert.IsFalse(localProfiles.RemoveProfile(id2));
         }
 
         [TestMethod]
@@ -32,6 +43,7 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestGetProfileIds_Multiple()
         {
+            var profiles = CreateProfiles();
             Assert.AreEqual(3, profiles.Count);
 
             var ids = profiles.Ids;
@@ -45,15 +57,26 @@ namespace Arise.FileSyncer.Core.Test
         [TestMethod]
         public void TestGetProfile_Existing()
         {
-            Assert.IsTrue(profiles.TryGetProfile(id2, out var profile));
+            var profiles = CreateProfiles();
+            Assert.IsTrue(profiles.GetProfile(id2, out var profile));
             Assert.IsNotNull(profile);
         }
 
         [TestMethod]
         public void TestGetProfile_NonExisting()
         {
-            Assert.IsFalse(profiles.TryGetProfile(id4, out var profile));
+            var profiles = CreateProfiles();
+            Assert.IsFalse(profiles.GetProfile(id4, out var profile));
             Assert.IsNull(profile);
+        }
+
+        private PeerProfiles CreateProfiles()
+        {
+            PeerProfiles profiles = new();
+            profiles.AddProfile(id1, new SyncProfile());
+            profiles.AddProfile(id2, new SyncProfile());
+            profiles.AddProfile(id3, new SyncProfile());
+            return profiles;
         }
     }
 }

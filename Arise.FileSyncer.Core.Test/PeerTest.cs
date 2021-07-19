@@ -89,7 +89,7 @@ namespace Arise.FileSyncer.Core.Test
         {
             using SyncerPeer peer = CreatePeer();
             Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
-            peer.AddProfile(dummyId1, new SyncProfile());
+            peer.Profiles.AddProfile(dummyId1, new SyncProfile());
             Assert.IsTrue(peer.ShareProfile(dummyId1, dummyId1));
         }
 
@@ -97,7 +97,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestShareProfile_NonExisting()
         {
             using SyncerPeer peer = CreatePeer();
-            peer.AddProfile(dummyId1, new SyncProfile());
+            peer.Profiles.AddProfile(dummyId1, new SyncProfile());
             Assert.IsFalse(peer.ShareProfile(dummyId1, dummyId1));
         }
 
@@ -114,7 +114,7 @@ namespace Arise.FileSyncer.Core.Test
         {
             using SyncerPeer peer = CreatePeer();
             Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
-            peer.AddProfile(dummyId1, new SyncProfile() { AllowSend = true, RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
+            peer.Profiles.AddProfile(dummyId1, new SyncProfile() { AllowSend = true, RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
             Assert.IsTrue(peer.SyncProfile(dummyId1, dummyId1));
         }
 
@@ -122,7 +122,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestSyncProfile_NonExisting()
         {
             using SyncerPeer peer = CreatePeer();
-            peer.AddProfile(dummyId1, new SyncProfile() { RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
+            peer.Profiles.AddProfile(dummyId1, new SyncProfile() { RootDirectory = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar });
             Assert.IsFalse(peer.SyncProfile(dummyId1, dummyId1));
         }
 
@@ -132,27 +132,6 @@ namespace Arise.FileSyncer.Core.Test
             using SyncerPeer peer = CreatePeer();
             Assert.IsTrue(peer.Connections.AddConnection(new DummyConnection(dummyId1)));
             Assert.IsFalse(peer.SyncProfile(dummyId1, dummyId1));
-        }
-
-        [TestMethod]
-        public void TestAddProfile()
-        {
-            using SyncerPeer peer = CreatePeer();
-            peer.AddProfile(dummyId1, new SyncProfile());
-
-            Assert.IsTrue(peer.Profiles.Ids.Contains(dummyId1));
-            Assert.IsFalse(peer.Profiles.Ids.Contains(dummyId2));
-        }
-
-        [TestMethod]
-        public void TestRemoveProfile()
-        {
-            using SyncerPeer peer = CreatePeer();
-            peer.AddProfile(dummyId1, new SyncProfile());
-
-            Assert.IsTrue(peer.RemoveProfile(dummyId1));
-            Assert.IsFalse(peer.RemoveProfile(dummyId1));
-            Assert.IsFalse(peer.RemoveProfile(dummyId2));
         }
 
         private SyncerPeer CreatePeer()

@@ -35,11 +35,16 @@ namespace Arise.FileSyncer.Core
         public int PingInterval { get; set; }
 
         /// <summary>
+        /// Is the local device supports file timestamp get and set.
+        /// </summary>
+        public bool SupportTimestamp { get; set; }
+
+        /// <summary>
         /// Creates a new instance with generic default values.
         /// </summary>
-        public SyncerPeerSettings() : this(Guid.Empty, string.Empty) { }
+        public SyncerPeerSettings() : this(Guid.Empty, string.Empty, true) { }
 
-        public SyncerPeerSettings(Guid deviceId, string displayName)
+        public SyncerPeerSettings(Guid deviceId, string displayName, bool supportTimestamp)
         {
             DeviceId = deviceId;
             DisplayName = displayName;
@@ -47,8 +52,12 @@ namespace Arise.FileSyncer.Core
             ChunkRequestCount = 16;
             ProgressTimeout = 61000;
             PingInterval = 61000;
+            SupportTimestamp = supportTimestamp;
         }
 
+        /// <summary>
+        /// Verifies the values validity
+        /// </summary>
         public bool Verify()
         {
             return !(DeviceId == Guid.Empty

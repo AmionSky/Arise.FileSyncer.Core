@@ -26,7 +26,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Process(SyncerConnection con)
         {
-            if (con.Owner.Profiles.TryGetProfile(ProfileId, out var profile))
+            if (con.Owner.Profiles.GetProfile(ProfileId, out var profile))
             {
                 if (profile.AllowDelete && profile.Key == Key)
                 {
@@ -37,7 +37,7 @@ namespace Arise.FileSyncer.Core.Messages
 
                     if (Directories.Count > 0)
                     {
-                        con.Owner.OnProfileChanged(new ProfileEventArgs(ProfileId, profile));
+                        profile.UpdateLastSyncDate(con.Owner.Profiles, ProfileId);
                     }
                 }
             }
