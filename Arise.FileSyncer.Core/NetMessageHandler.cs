@@ -142,6 +142,7 @@ namespace Arise.FileSyncer.Core
                 {
                     exitReceiver = true;
                     sender.Complete();
+                    Connection.Dispose();
                 }
             }
         }
