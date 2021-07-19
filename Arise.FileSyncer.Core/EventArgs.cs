@@ -2,35 +2,23 @@ using System;
 
 namespace Arise.FileSyncer.Core
 {
-    public class ConnectionAddedEventArgs
+    public class ConnectionEventArgs : EventArgs
     {
         public Guid Id { get; }
 
-        public ConnectionAddedEventArgs(Guid id)
+        public ConnectionEventArgs(Guid id)
         {
             Id = id;
         }
     }
 
-    public class ConnectionVerifiedEventArgs
+    public class ConnectionVerifiedEventArgs : ConnectionEventArgs
     {
-        public Guid Id { get; }
         public string Name { get; }
 
-        public ConnectionVerifiedEventArgs(Guid id, string name)
+        public ConnectionVerifiedEventArgs(Guid id, string name) : base(id)
         {
-            Id = id;
             Name = name;
-        }
-    }
-
-    public class ConnectionRemovedEventArgs
-    {
-        public Guid Id { get; }
-
-        public ConnectionRemovedEventArgs(Guid id)
-        {
-            Id = id;
         }
     }
 

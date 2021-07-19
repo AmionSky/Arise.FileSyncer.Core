@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Arise.FileSyncer.Core.FileSync;
 using Arise.FileSyncer.Core.Messages;
@@ -13,15 +14,18 @@ namespace Arise.FileSyncer.Core
     /// </summary>
     public class SyncerPeer : IDisposable
     {
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+        // TODO: Move it to a more suitable location
         /// <summary>
         /// Is the local device supports file timestamp get and set.
         /// </summary>
         public static bool SupportTimestamp = true;
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         /// <summary>
         /// Called when a new connection is successfully added.
         /// </summary>
-        public event EventHandler<ConnectionAddedEventArgs> ConnectionAdded;
+        public event EventHandler<ConnectionEventArgs> ConnectionAdded;
 
         /// <summary>
         /// Called when a connection got verified and we know basic information about the remote device.
@@ -31,7 +35,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Called when a connection is successfully removed.
         /// </summary>
-        public event EventHandler<ConnectionRemovedEventArgs> ConnectionRemoved;
+        public event EventHandler<ConnectionEventArgs> ConnectionRemoved;
 
         /// <summary>
         /// [Async] Called when a profile got changed or updated.
@@ -77,7 +81,11 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Allow sending and receiving pairing requests.
         /// </summary>
-        public bool AllowPairing { get => _allowPairing; set => _allowPairing = value; }
+        public bool AllowPairing
+        {
+            get => Interlocked.Read(ref _allowPairing) == 1;
+            set => Interlocked.Exchange(ref _allowPairing, Convert.ToInt64(value));
+        }
 
         /// <summary>
         /// The peer settings class.
@@ -91,8 +99,7 @@ namespace Arise.FileSyncer.Core
 
         private readonly Lazy<FileBuilder> fileBuilder;
         private readonly ConcurrentDictionary<Guid, SyncerConnection> connections;
-
-        private volatile bool _allowPairing;
+        private long _allowPairing = 0;
 
         /// <summary>
         /// Creates a new peer with the specified settings.
@@ -122,7 +129,7 @@ namespace Arise.FileSyncer.Core
 
             if (added)
             {
-                OnConnectionAdded(new ConnectionAddedEventArgs(connection.Id));
+                OnConnectionAdded(connection.Id);
                 syncerConnection.Start();
             }
             else
@@ -145,7 +152,7 @@ namespace Arise.FileSyncer.Core
             if (removed)
             {
                 syncerConnection.Dispose();
-                OnConnectionRemoved(new ConnectionRemovedEventArgs(id));
+                OnConnectionRemoved(id);
             }
 
             return removed;
@@ -215,7 +222,6 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         /// <param name="connectionId">ID of the connection</param>
         /// <param name="profileId">ID of the profile to share</param>
-        /// <returns></returns>
         public bool ShareProfile(Guid connectionId, Guid profileId)
         {
             if (Settings.Profiles.TryGetValue(profileId, out var profile))
@@ -264,7 +270,6 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         /// <param name="profileId">ID of the profile to add</param>
         /// <param name="newProfile">The new profile</param>
-        /// <returns></returns>
         public bool AddProfile(Guid profileId, SyncProfile newProfile)
         {
             if (Settings.Profiles.TryAdd(profileId, newProfile))
@@ -281,7 +286,6 @@ namespace Arise.FileSyncer.Core
         /// Removes a profile form the peer settings.
         /// </summary>
         /// <param name="profileId">ID of the profile to remove</param>
-        /// <returns></returns>
         public bool RemoveProfile(Guid profileId)
         {
             if (Settings.Profiles.TryRemove(profileId, out var profile))
@@ -329,9 +333,9 @@ namespace Arise.FileSyncer.Core
             return fileBuilder.Value;
         }
 
-        internal virtual void OnConnectionAdded(ConnectionAddedEventArgs e)
+        internal virtual void OnConnectionAdded(Guid connectionId)
         {
-            ConnectionAdded?.Invoke(this, e);
+            ConnectionAdded?.Invoke(this, new ConnectionEventArgs(connectionId));
         }
 
         internal virtual void OnConnectionVerified(ConnectionVerifiedEventArgs e)
@@ -339,9 +343,9 @@ namespace Arise.FileSyncer.Core
             ConnectionVerified?.Invoke(this, e);
         }
 
-        internal virtual void OnConnectionRemoved(ConnectionRemovedEventArgs e)
+        internal virtual void OnConnectionRemoved(Guid connectionId)
         {
-            ConnectionRemoved?.Invoke(this, e);
+            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs(connectionId));
         }
 
         internal virtual void OnProfileChanged(ProfileEventArgs e)
@@ -384,8 +388,9 @@ namespace Arise.FileSyncer.Core
             Task.Run(() => FileBuilt?.Invoke(this, e));
         }
 
+
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -407,26 +412,17 @@ namespace Arise.FileSyncer.Core
                     connections.Clear();
                 }
 
-                // Free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // Set large fields to null.
-
+                // Free unmanaged resources (unmanaged objects) and override finalizer
+                // Set large fields to null
                 disposedValue = true;
             }
         }
 
-        // Override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~SyncerPeer() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // Uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

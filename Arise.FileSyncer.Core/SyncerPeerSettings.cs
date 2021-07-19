@@ -74,47 +74,34 @@ namespace Arise.FileSyncer.Core
                 || PingInterval <= 0);
         }
 
+        /// <summary>
+        /// Fix broken values with a reference settings class
+        /// </summary>
         public void Fix(SyncerPeerSettings settings)
         {
             if (DeviceId == Guid.Empty)
-            {
                 DeviceId = settings.DeviceId;
-            }
 
             if (string.IsNullOrWhiteSpace(DisplayName))
-            {
                 DisplayName = settings.DisplayName;
-            }
-
+            
             if (DeviceKeys == null)
-            {
                 DeviceKeys = settings.DeviceKeys;
-            }
-
+            
             if (Profiles == null)
-            {
                 Profiles = settings.Profiles;
-            }
-
+            
             if (BufferSize <= 0)
-            {
                 BufferSize = settings.BufferSize;
-            }
-
+            
             if (ChunkRequestCount <= 0)
-            {
                 ChunkRequestCount = settings.ChunkRequestCount;
-            }
-
+            
             if (ProgressTimeout <= 0)
-            {
                 ProgressTimeout = settings.ProgressTimeout;
-            }
-
+            
             if (PingInterval <= 0)
-            {
                 PingInterval = settings.PingInterval;
-            }
         }
     }
 }

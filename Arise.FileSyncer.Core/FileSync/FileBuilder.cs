@@ -93,7 +93,7 @@ namespace Arise.FileSyncer.Core.FileSync
             WriterFileId = Guid.Empty;
         }
 
-        private void Owner_ConnectionRemoved(object sender, ConnectionRemovedEventArgs e)
+        private void Owner_ConnectionRemoved(object sender, ConnectionEventArgs e)
         {
             List<Guid> markedForRemove = new();
 
