@@ -61,7 +61,7 @@ namespace Arise.FileSyncer.Core.FileSync
         private int builderLength = 0;
         private Guid _writerFileId = Guid.Empty;
         private readonly object _writerFileIdLock = new();
-        
+
 
         public FileBuilder(SyncerPeer owner)
         {

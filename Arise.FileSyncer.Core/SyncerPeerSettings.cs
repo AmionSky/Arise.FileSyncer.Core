@@ -16,11 +16,6 @@ namespace Arise.FileSyncer.Core
         public string DisplayName { get; private set; }
 
         /// <summary>
-        /// Paired devices. (Remote Device Id, Verification Key)
-        /// </summary>
-        public ConcurrentDictionary<Guid, Guid> DeviceKeys { get; private set; }
-
-        /// <summary>
         /// Saved sync profiles. (Profile ID, Profile Data)
         /// </summary>
         public ConcurrentDictionary<Guid, SyncProfile> Profiles { get; private set; }
@@ -54,7 +49,6 @@ namespace Arise.FileSyncer.Core
         {
             DeviceId = deviceId;
             DisplayName = displayName;
-            DeviceKeys = new ConcurrentDictionary<Guid, Guid>(1, 0);
             Profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
             BufferSize = 4096;
             ChunkRequestCount = 16;
@@ -66,7 +60,6 @@ namespace Arise.FileSyncer.Core
         {
             return !(DeviceId == Guid.Empty
                 || string.IsNullOrWhiteSpace(DisplayName)
-                || DeviceKeys == null
                 || Profiles == null
                 || BufferSize <= 0
                 || ChunkRequestCount <= 0
@@ -84,22 +77,19 @@ namespace Arise.FileSyncer.Core
 
             if (string.IsNullOrWhiteSpace(DisplayName))
                 DisplayName = settings.DisplayName;
-            
-            if (DeviceKeys == null)
-                DeviceKeys = settings.DeviceKeys;
-            
+
             if (Profiles == null)
                 Profiles = settings.Profiles;
-            
+
             if (BufferSize <= 0)
                 BufferSize = settings.BufferSize;
-            
+
             if (ChunkRequestCount <= 0)
                 ChunkRequestCount = settings.ChunkRequestCount;
-            
+
             if (ProgressTimeout <= 0)
                 ProgressTimeout = settings.ProgressTimeout;
-            
+
             if (PingInterval <= 0)
                 PingInterval = settings.PingInterval;
         }

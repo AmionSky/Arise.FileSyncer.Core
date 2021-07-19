@@ -13,33 +13,35 @@ namespace Arise.FileSyncer.Core.Messages
 
         public VerificationDataMessage() { }
 
-        public static void Send(SyncerConnection con)
+        public static void Send(SyncerConnection connection)
         {
-            SyncerPeerSettings peerSettings = con.Owner.Settings;
+            var deviceKeys = connection.Owner.DeviceKeys;
 
-            if (peerSettings.DeviceKeys.TryGetValue(con.GetRemoteDeviceId(), out Guid key))
+            if (deviceKeys.TryGetVerificationKey(connection.GetRemoteDeviceId(), out Guid key))
             {
+                var settings = connection.Owner.Settings;
+
                 VerificationDataMessage message = new()
                 {
-                    Key = Security.KeyGenerator(key, peerSettings.DeviceId)
+                    Key = Security.KeyGenerator(key, settings.DeviceId)
                 };
 
-                con.Send(message);
+                connection.Send(message);
             }
-            else if (con.Owner.AllowPairing)
+            else if (connection.Owner.AllowPairing)
             {
-                con.Pair();
+                connection.Pair();
             }
             else
             {
                 Log.Verbose("Non paired device connection. Disconnecting...");
-                con.Disconnect();
+                connection.Disconnect();
             }
         }
 
         public override void Process(SyncerConnection con)
         {
-            if (con.Owner.Settings.DeviceKeys.TryGetValue(con.GetRemoteDeviceId(), out Guid key)
+            if (con.Owner.DeviceKeys.TryGetVerificationKey(con.GetRemoteDeviceId(), out Guid key)
                 && Security.KeyGenerator(key, con.GetRemoteDeviceId()) == Key)
             {
                 Log.Info("Verification successful");

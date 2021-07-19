@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Arise.FileSyncer.Core.FileSync;
@@ -23,7 +21,7 @@ namespace Arise.FileSyncer.Core
         public static bool SupportTimestamp = true;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
-        
+
 
         /// <summary>
         /// [Async] Called when a profile got changed or updated.
@@ -81,6 +79,11 @@ namespace Arise.FileSyncer.Core
         public PeerConnections Connections { get; }
 
         /// <summary>
+        /// Manager of paired devices keys
+        /// </summary>
+        public PeerDeviceKeys DeviceKeys { get; }
+
+        /// <summary>
         /// The peer settings class.
         /// </summary>
         public SyncerPeerSettings Settings { get; }
@@ -91,7 +94,7 @@ namespace Arise.FileSyncer.Core
         public PluginManager Plugins { get; }
 
         private readonly Lazy<FileBuilder> fileBuilder;
-        
+
         private long _allowPairing = 0;
 
         /// <summary>
@@ -103,6 +106,7 @@ namespace Arise.FileSyncer.Core
             AllowPairing = false;
 
             Connections = new PeerConnections(this);
+            DeviceKeys = new PeerDeviceKeys();
             Plugins = new PluginManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
@@ -242,7 +246,7 @@ namespace Arise.FileSyncer.Core
             return fileBuilder.Value;
         }
 
-        
+
 
         internal virtual void OnProfileChanged(ProfileEventArgs e)
         {

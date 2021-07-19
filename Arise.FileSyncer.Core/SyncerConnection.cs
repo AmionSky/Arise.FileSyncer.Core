@@ -142,10 +142,10 @@ namespace Arise.FileSyncer.Core
             }
         }
 
-        internal void AddDeviceKey(Guid device, Guid vKey)
+        internal void AddDeviceKey(Guid deviceId, Guid verificationKey)
         {
-            Owner.Settings.DeviceKeys.AddOrUpdate(device, vKey, (k, v) => vKey);
-            Owner.OnNewPairAdded(new NewPairAddedEventArgs(device));
+            Owner.DeviceKeys.Add(deviceId, verificationKey);
+            Owner.OnNewPairAdded(new NewPairAddedEventArgs(deviceId));
         }
 
         internal void StartProfileSync(SyncProfileState remoteProfile)
