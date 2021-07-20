@@ -39,6 +39,14 @@ namespace Arise.FileSyncer.Core.Peer
         }
 
         /// <summary>
+        /// Is the specified device ID registered
+        /// </summary>
+        public bool ContainsId(Guid deviceId)
+        {
+            return deviceKeys.ContainsKey(deviceId);
+        }
+
+        /// <summary>
         /// Snapshot of the current keys and values
         /// </summary>
         public KeyValuePair<Guid,Guid>[] Snapshot()
