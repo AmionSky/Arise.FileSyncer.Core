@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
@@ -10,7 +11,12 @@ namespace Arise.FileSyncer.Core.Peer
 
         public DeviceKeyManager()
         {
-            deviceKeys = new ConcurrentDictionary<Guid, Guid>(1, 0);
+            deviceKeys = new ConcurrentDictionary<Guid, Guid>();
+        }
+
+        public DeviceKeyManager(KeyValuePair<Guid, Guid>[] snapshot)
+        {
+            deviceKeys = new ConcurrentDictionary<Guid, Guid>(snapshot);
         }
 
         /// <summary>
@@ -30,6 +36,14 @@ namespace Arise.FileSyncer.Core.Peer
         public void Add(Guid deviceId, Guid verificationKey)
         {
             deviceKeys.AddOrUpdate(deviceId, verificationKey, (k, v) => verificationKey);
+        }
+
+        /// <summary>
+        /// Snapshot of the current keys and values
+        /// </summary>
+        public KeyValuePair<Guid,Guid>[] Snapshot()
+        {
+            return deviceKeys.ToArray();
         }
     }
 }

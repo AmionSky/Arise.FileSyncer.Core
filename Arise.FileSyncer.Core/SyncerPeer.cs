@@ -61,14 +61,14 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Creates a new peer with the specified settings.
         /// </summary>
-        public SyncerPeer(SyncerPeerSettings settings)
+        public SyncerPeer(SyncerPeerSettings settings, DeviceKeyManager deviceKeyManager, ProfileManager profileManager)
         {
-            Settings = settings;
+            Settings = settings ?? new SyncerPeerSettings();
             AllowPairing = false;
 
             Connections = new ConnectionManager();
-            DeviceKeys = new DeviceKeyManager();
-            Profiles = new ProfileManager();
+            DeviceKeys = deviceKeyManager ?? new DeviceKeyManager();
+            Profiles = profileManager ?? new ProfileManager();
 
             fileBuilder = new Lazy<FileBuilder>(() => new FileBuilder(this));
         }

@@ -41,7 +41,12 @@ namespace Arise.FileSyncer.Core.Peer
 
         public ProfileManager()
         {
-            profiles = new ConcurrentDictionary<Guid, SyncProfile>(2, 0);
+            profiles = new ConcurrentDictionary<Guid, SyncProfile>();
+        }
+
+        public ProfileManager(KeyValuePair<Guid, SyncProfile>[] snapshot)
+        {
+            profiles = new ConcurrentDictionary<Guid, SyncProfile>(snapshot);
         }
 
         /// <summary>
@@ -108,6 +113,14 @@ namespace Arise.FileSyncer.Core.Peer
         public bool GetProfile(Guid profileId, out SyncProfile profile)
         {
             return profiles.TryGetValue(profileId, out profile);
+        }
+
+        /// <summary>
+        /// Snapshot of the current keys and values
+        /// </summary>
+        public KeyValuePair<Guid, SyncProfile>[] Snapshot()
+        {
+            return profiles.ToArray();
         }
 
         // Events
