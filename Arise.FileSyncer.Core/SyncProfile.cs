@@ -39,7 +39,7 @@ namespace Arise.FileSyncer.Core
         public DateTime LastSyncDate
         {
             get => new(Interlocked.Read(ref lastSyncDate));
-            private set => Interlocked.Exchange(ref lastSyncDate, value.Ticks);
+            init => lastSyncDate = value.Ticks;
         }
         /// <summary>
         /// The date and time the profile was created
@@ -98,7 +98,7 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         internal void UpdateLastSyncDate(ProfileManager peerProfiles, Guid id)
         {
-            LastSyncDate = DateTime.Now;
+            Interlocked.Exchange(ref lastSyncDate, DateTime.Now.Ticks);
             peerProfiles.OnProfileChanged(id, this);
         }
 

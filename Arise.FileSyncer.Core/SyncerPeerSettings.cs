@@ -4,15 +4,17 @@ namespace Arise.FileSyncer.Core
 {
     public class SyncerPeerSettings
     {
+        private Guid deviceId;
+
         /// <summary>
         /// Id of the local device.
         /// </summary>
-        public Guid DeviceId { get; private set; }
+        public Guid DeviceId { get => deviceId; init => deviceId = value; }
 
         /// <summary>
         /// Readable name of the local device.
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Size of the file send buffer.
@@ -37,7 +39,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Is the local device supports file timestamp get and set.
         /// </summary>
-        public bool SupportTimestamp { get; set; }
+        public bool SupportTimestamp { get; init; }
 
         /// <summary>
         /// Creates a new instance with generic default values.
@@ -74,7 +76,7 @@ namespace Arise.FileSyncer.Core
         public void Fix(SyncerPeerSettings settings)
         {
             if (DeviceId == Guid.Empty)
-                DeviceId = settings.DeviceId;
+                deviceId = settings.DeviceId;
 
             if (string.IsNullOrWhiteSpace(DisplayName))
                 DisplayName = settings.DisplayName;
