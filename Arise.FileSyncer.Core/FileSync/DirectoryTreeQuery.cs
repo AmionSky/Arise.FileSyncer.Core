@@ -5,8 +5,15 @@ using Arise.FileSyncer.Core.Helpers;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
-    internal static class DirectoryTreeQuery
+    public static class DirectoryTreeQuery
     {
+        public delegate FileSystemItem[] DelegateGenerateTree(string rootDirectory, bool skipHidden);
+        public static DelegateGenerateTree GenerateTree = (rd, sh) =>
+        {
+            GenerateTreeDefault(out var tree, rd, sh);
+            return tree;
+        };
+
         /// <summary>
         /// Creates a DirectoryTree with all folders and files inside of it. With an optional cleanup utility (remove var).
         /// </summary>
@@ -14,7 +21,7 @@ namespace Arise.FileSyncer.Core.FileSync
         /// <param name="folder">Root folder for the directory tree creation.</param>
         /// <param name="remove">The extension of files marked for delete.</param>
         /// <returns>Success</returns>
-        public static bool GenerateTree(out FileSystemItem[] treeInfo, string folder, bool skipHidden, string remove = null)
+        public static bool GenerateTreeDefault(out FileSystemItem[] treeInfo, string folder, bool skipHidden, string remove = null)
         {
             if (!Directory.Exists(folder))
             {

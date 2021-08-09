@@ -244,7 +244,6 @@ namespace Arise.FileSyncer.Core.FileSync
             }
 
             //Get some data
-            string pathReal = Path.Combine(fileInfo.RootPath, fileInfo.RelativePath);
             string relativeTempPath = fileInfo.RelativePath + TemporaryFileExtension;
 
             // Check success
