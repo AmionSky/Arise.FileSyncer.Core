@@ -158,7 +158,8 @@ namespace Arise.FileSyncer.Core
                 return;
             }
 
-            if (!localProfile.GenerateState(out FileSystemItem[] state))
+            FileSystemItem[] state = localProfile.GenerateState();
+            if (state == null)
             {
                 Log.Warning($"Failed to get profile state: PID:{remoteProfile.Id}");
                 return;

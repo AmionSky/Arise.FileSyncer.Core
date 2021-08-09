@@ -32,7 +32,7 @@ namespace Arise.FileSyncer.Core.Messages
                 {
                     for (int i = 0; i < Directories.Count; i++)
                     {
-                        Utility.DirectoryCreate(ProfileId, profile.RootDirectory, PathHelper.GetCorrect(Directories[i], true));
+                        Utility.DirectoryCreate(profile.RootDirectory, PathHelper.GetCorrect(Directories[i], true));
                     }
 
                     if (Directories.Count > 0)

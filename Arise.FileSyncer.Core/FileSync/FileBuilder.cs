@@ -148,10 +148,8 @@ namespace Arise.FileSyncer.Core.FileSync
                 {
                     writerStream?.Dispose();
                     WriterFileId = message.FileId;
-                    if (!Utility.FileCreateWriteStream(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension, out writerStream))
-                    {
-                        error = true;
-                    }
+                    writerStream = Utility.FileCreateWriteStream(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension, FileMode.Append);
+                    if (writerStream == null) error = true;
                 }
 
                 if (!error)
@@ -209,8 +207,8 @@ namespace Arise.FileSyncer.Core.FileSync
                     }
                 }
 
-                if (Utility.FileDelete(message.ProfileId, profile.RootDirectory, temporaryRelativePath) &&
-                    Utility.FileCreate(message.ProfileId, profile.RootDirectory, temporaryRelativePath))
+                if (Utility.FileDelete(profile.RootDirectory, temporaryRelativePath) &&
+                    Utility.FileCreate(profile.RootDirectory, temporaryRelativePath))
                 {
                     Log.Info("Receiving: " + relativePath);
 
@@ -258,20 +256,20 @@ namespace Arise.FileSyncer.Core.FileSync
                 }
 
                 //Delete temp file
-                Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+                Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
             }
             else
             {
                 //Delete existing file at pathReal
-                Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath);
+                Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath);
 
                 //Rename from the temp file to the real file
-                if (Utility.FileRename(fileInfo.ProfileId, fileInfo.RootPath, relativeTempPath, Path.GetFileName(fileInfo.RelativePath)))
+                if (Utility.FileRename(fileInfo.RootPath, relativeTempPath, Path.GetFileName(fileInfo.RelativePath)))
                 {
                     //If the rename was successful -> Set file times if it supports timestamps
                     if (owner.Settings.SupportTimestamp)
                     {
-                        if (!Utility.FileSetTime(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
+                        if (!Utility.FileSetTime(fileInfo.RootPath, fileInfo.RelativePath, message.LastWriteTime, message.CreationTime))
                         {
                             Log.Warning($"{this}: Failed to set Time: {fileInfo.RelativePath}");
                         }
@@ -290,7 +288,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 else
                 {
                     //Remove temp file if move/rename failed
-                    Utility.FileDelete(fileInfo.ProfileId, fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+                    Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
 
                     Log.Warning($"{this}: Failed to rename: {fileInfo.RelativePath}");
                 }

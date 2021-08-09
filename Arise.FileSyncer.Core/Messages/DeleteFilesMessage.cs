@@ -32,7 +32,7 @@ namespace Arise.FileSyncer.Core.Messages
                 {
                     for (int i = 0; i < Files.Count; i++)
                     {
-                        Utility.FileDelete(ProfileId, profile.RootDirectory, PathHelper.GetCorrect(Files[i], false));
+                        Utility.FileDelete(profile.RootDirectory, PathHelper.GetCorrect(Files[i], false));
                     }
 
                     if (Files.Count > 0)

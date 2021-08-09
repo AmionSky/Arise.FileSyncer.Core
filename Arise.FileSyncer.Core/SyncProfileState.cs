@@ -24,7 +24,8 @@ namespace Arise.FileSyncer.Core
 
         public static SyncProfileState Create(Guid id, SyncProfile profile)
         {
-            if (profile.GenerateState(out var state))
+            FileSystemItem[] state = profile.GenerateState();
+            if (state != null)
             {
                 return new SyncProfileState(id, profile.Key, profile.AllowDelete, state);
             }

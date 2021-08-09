@@ -105,11 +105,9 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Generate file-system state for sync
         /// </summary>
-        internal bool GenerateState(out FileSystemItem[] state)
+        internal FileSystemItem[] GenerateState()
         {
-            state = DirectoryTreeQuery.GenerateTree(RootDirectory, SkipHidden);
-            return state != null;
-            //return DirectoryTreeQuery.GenerateTree(out state, RootDirectory, SkipHidden, FileBuilder.TemporaryFileExtension);
+            return Utility.GenerateTree(RootDirectory, SkipHidden);
         }
 
         public void Deserialize(Stream stream)

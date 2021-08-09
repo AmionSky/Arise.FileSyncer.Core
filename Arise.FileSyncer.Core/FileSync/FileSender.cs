@@ -88,7 +88,6 @@ namespace Arise.FileSyncer.Core.FileSync
             byte[] buffer = new byte[owner.Owner.Settings.BufferSize];
             bool hadError = false;
 
-
             string pathRelative = sendInfo.RelativePath;
             string pathRoot = sendInfo.RootPath;
 
@@ -99,10 +98,8 @@ namespace Arise.FileSyncer.Core.FileSync
             }
 
             //Create file stream
-            if (!Utility.FileCreateReadStream(sendInfo.ProfileId, pathRoot, pathRelative, out Stream fileStream))
-            {
-                hadError = true;
-            }
+            Stream fileStream = Utility.FileCreateReadStream(pathRoot, pathRelative);
+            if (fileStream == null) hadError = true;
 
             if (!hadError)
             {

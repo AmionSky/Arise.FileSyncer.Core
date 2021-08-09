@@ -32,26 +32,5 @@ namespace Arise.FileSyncer.Core.Helpers
 
             return pathBuilder.ToString();
         }
-
-        /// <summary>
-        /// Gets the relative path. Automatically converts it. Returns empty string on error
-        /// </summary>
-        /// <param name="fullPath">The absolute path you want to get the relative of</param>
-        /// <param name="rootPath">The parent folder you want to use as the relative root</param>
-        /// <param name="fullPathIsDirectory">Is the fullPath a directory</param>
-        /// <returns>Relative path</returns>
-        public static string GetRelative(string fullPath, string rootPath, bool fullPathIsDirectory)
-        {
-            fullPath = GetCorrect(fullPath, fullPathIsDirectory);
-            rootPath = GetCorrect(rootPath, true);
-
-            if (string.IsNullOrEmpty(fullPath) || string.IsNullOrEmpty(rootPath) ||
-                !fullPath.StartsWith(rootPath, StringComparison.Ordinal))
-            {
-                return string.Empty;
-            }
-
-            return fullPath[rootPath.Length..];
-        }
     }
 }

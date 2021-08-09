@@ -18,7 +18,7 @@ namespace Arise.FileSyncer.Core.Test
             if (File.Exists(filePath)) File.Delete(filePath);
 
             Assert.IsFalse(File.Exists(filePath));
-            Assert.IsTrue(Utility.FileCreate(Guid.Empty, Root, "create.test"));
+            Assert.IsTrue(Utility.FileCreate(Root, "create.test"));
             Assert.IsTrue(File.Exists(filePath));
         }
 
@@ -31,7 +31,7 @@ namespace Arise.FileSyncer.Core.Test
             File.Create(filePath).Dispose();
 
             Assert.IsTrue(File.Exists(filePath));
-            Assert.IsTrue(Utility.FileDelete(Guid.Empty, Root, "delete.test"));
+            Assert.IsTrue(Utility.FileDelete(Root, "delete.test"));
             Assert.IsFalse(File.Exists(filePath));
         }
 
@@ -47,7 +47,7 @@ namespace Arise.FileSyncer.Core.Test
 
             Assert.IsTrue(File.Exists(sourcePath));
             Assert.IsFalse(File.Exists(targetPath));
-            Assert.IsTrue(Utility.FileRename(Guid.Empty, Root, "move s source.test", "move s target.test"));
+            Assert.IsTrue(Utility.FileRename(Root, "move s source.test", "move s target.test"));
             Assert.IsFalse(File.Exists(sourcePath));
             Assert.IsTrue(File.Exists(targetPath));
         }
@@ -65,7 +65,7 @@ namespace Arise.FileSyncer.Core.Test
 
             Assert.IsTrue(File.Exists(sourcePath));
             Assert.IsTrue(File.Exists(targetPath));
-            Assert.IsFalse(Utility.FileRename(Guid.Empty, Root, "move f source.test", "move f target.test"));
+            Assert.IsFalse(Utility.FileRename(Root, "move f source.test", "move f target.test"));
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ namespace Arise.FileSyncer.Core.Test
 
             Assert.AreNotEqual(targetDate, fileInfo.CreationTime);
             Assert.AreNotEqual(targetDate, fileInfo.LastWriteTime);
-            Assert.IsTrue(Utility.FileSetTime(Guid.Empty, Root, "set time.test", targetDate, targetDate));
+            Assert.IsTrue(Utility.FileSetTime(Root, "set time.test", targetDate, targetDate));
 
             fileInfo.Refresh();
             Assert.AreEqual(targetDate, fileInfo.CreationTime);
@@ -99,7 +99,7 @@ namespace Arise.FileSyncer.Core.Test
             if (Directory.Exists(directoryPath)) Directory.Delete(directoryPath);
 
             Assert.IsFalse(Directory.Exists(directoryPath));
-            Assert.IsTrue(Utility.DirectoryCreate(Guid.Empty, Root, "createtest"));
+            Assert.IsTrue(Utility.DirectoryCreate(Root, "createtest"));
             Assert.IsTrue(Directory.Exists(directoryPath));
         }
     }
