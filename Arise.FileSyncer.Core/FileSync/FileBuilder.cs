@@ -31,8 +31,6 @@ namespace Arise.FileSyncer.Core.FileSync
             }
         }
 
-        public const string TemporaryFileExtension = ".synctmp";
-
         private readonly SyncerPeer owner;
 
         private readonly ChannelWorker<FileMessageBase> builder;
@@ -148,7 +146,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 {
                     writerStream?.Dispose();
                     WriterFileId = message.FileId;
-                    writerStream = Utility.FileCreateWriteStream(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension, FileMode.Append);
+                    writerStream = Utility.FileCreateWriteStream(fileInfo.RootPath, fileInfo.RelativePath + Utility.TemporaryFileExtension, FileMode.Append);
                     if (writerStream == null) error = true;
                 }
 
@@ -193,7 +191,7 @@ namespace Arise.FileSyncer.Core.FileSync
             if (profile.AllowReceive && profile.Key == message.ProfileKey)
             {
                 string relativePath = PathHelper.GetCorrect(message.RelativePath, false);
-                string temporaryRelativePath = relativePath + TemporaryFileExtension;
+                string temporaryRelativePath = relativePath + Utility.TemporaryFileExtension;
 
                 foreach (KeyValuePair<Guid, BuilderFileInfo> builderInfo in fileInfos)
                 {
@@ -242,7 +240,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
 
             //Get some data
-            string relativeTempPath = fileInfo.RelativePath + TemporaryFileExtension;
+            string relativeTempPath = fileInfo.RelativePath + Utility.TemporaryFileExtension;
 
             // Check success
             if (!message.Success)
@@ -256,7 +254,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 }
 
                 //Delete temp file
-                Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+                Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + Utility.TemporaryFileExtension);
             }
             else
             {
@@ -288,7 +286,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 else
                 {
                     //Remove temp file if move/rename failed
-                    Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + TemporaryFileExtension);
+                    Utility.FileDelete(fileInfo.RootPath, fileInfo.RelativePath + Utility.TemporaryFileExtension);
 
                     Log.Warning($"{this}: Failed to rename: {fileInfo.RelativePath}");
                 }

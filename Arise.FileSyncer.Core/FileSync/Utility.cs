@@ -7,6 +7,8 @@ namespace Arise.FileSyncer.Core.FileSync
 {
     public static class Utility
     {
+        public const string TemporaryFileExtension = ".synctmp";
+
         public delegate bool DelegateFileCreate(string rootPath, string relativePath);
         public delegate bool DelegateFileDelete(string rootPath, string relativePath);
         public delegate bool DelegateFileRename(string rootPath, string relativePath, string targetName);
@@ -215,7 +217,7 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 foreach (var fsItem in rootDirInfo.EnumerateFileSystemInfos("*", options))
                 {
-                    if (string.Equals(fsItem.Extension, FileBuilder.TemporaryFileExtension, StringComparison.Ordinal))
+                    if (string.Equals(fsItem.Extension, TemporaryFileExtension, StringComparison.Ordinal))
                         continue;
 
                     string relativePath = Path.GetRelativePath(rootPath, fsItem.FullName);
