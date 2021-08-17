@@ -38,8 +38,8 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         public DateTime LastSyncDate
         {
-            get => new(Interlocked.Read(ref lastSyncDate));
-            init => lastSyncDate = value.Ticks;
+            get => new(Interlocked.Read(ref lastSyncDate), DateTimeKind.Utc);
+            init => lastSyncDate = value.ToUniversalTime().Ticks;
         }
         /// <summary>
         /// The date and time the profile was created
@@ -73,8 +73,8 @@ namespace Arise.FileSyncer.Core
             AllowSend = false;
             AllowReceive = false;
             AllowDelete = false;
-            LastSyncDate = DateTime.Now;
-            CreationDate = DateTime.Now;
+            LastSyncDate = DateTime.UtcNow;
+            CreationDate = DateTime.UtcNow;
             SkipHidden = true;
             RootDirectory = string.Empty;
         }
@@ -98,7 +98,7 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         internal void UpdateLastSyncDate(ProfileManager peerProfiles, Guid id)
         {
-            Interlocked.Exchange(ref lastSyncDate, DateTime.Now.Ticks);
+            Interlocked.Exchange(ref lastSyncDate, DateTime.UtcNow.Ticks);
             peerProfiles.OnProfileChanged(id, this);
         }
 
