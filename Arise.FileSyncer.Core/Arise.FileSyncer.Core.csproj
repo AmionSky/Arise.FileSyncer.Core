@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>Core of the Syncer Service</Description>
     <PackageProjectUrl>https://github.com/arisefs/Arise.FileSyncer.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arisefs/Arise.FileSyncer.Core</RepositoryUrl>
@@ -16,9 +16,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arise.FileSyncer.Log" Version="1.0.1" />
-    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.1.0" />
-    <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
+    <PackageReference Include="Arise.FileSyncer.Log" Version="1.0.2" />
+    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.1.2" />
+    <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
