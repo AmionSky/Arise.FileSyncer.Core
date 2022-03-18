@@ -1,10 +1,13 @@
 using System;
+using System.IO;
+using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
-    public class SyncerPeerSettings
+    public class SyncerPeerSettings : IBinarySerializable
     {
         private Guid deviceId;
+        private bool supportTimestamp;
 
         /// <summary>
         /// Id of the local device.
@@ -39,7 +42,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Is the local device supports file timestamp get and set.
         /// </summary>
-        public bool SupportTimestamp { get; init; }
+        public bool SupportTimestamp { get => supportTimestamp; init => supportTimestamp = value; }
 
         /// <summary>
         /// Creates a new instance with generic default values.
@@ -92,6 +95,28 @@ namespace Arise.FileSyncer.Core
 
             if (PingInterval <= 0)
                 PingInterval = settings.PingInterval;
+        }
+
+        public void Deserialize(Stream stream)
+        {
+            deviceId = stream.ReadGuid();
+            DisplayName = stream.ReadString();
+            BufferSize = stream.ReadInt32();
+            ChunkRequestCount = stream.ReadInt32();
+            ProgressTimeout = stream.ReadInt32();
+            PingInterval = stream.ReadInt32();
+            supportTimestamp = stream.ReadBoolean();
+        }
+
+        public void Serialize(Stream stream)
+        {
+            stream.WriteAFS(DeviceId);
+            stream.WriteAFS(DisplayName);
+            stream.WriteAFS(BufferSize);
+            stream.WriteAFS(ChunkRequestCount);
+            stream.WriteAFS(ProgressTimeout);
+            stream.WriteAFS(PingInterval);
+            stream.WriteAFS(SupportTimestamp);
         }
     }
 }
