@@ -129,7 +129,7 @@ namespace Arise.FileSyncer.Core
         {
             if (accepted)
             {
-                DateTime now = DateTime.Now;
+                DateTime now = DateTime.UtcNow;
                 pairingSupport.Value.GenTime = now;
                 Guid rawKey = Guid.NewGuid();
                 AddDeviceKey(GetRemoteDeviceId(), rawKey);
@@ -201,6 +201,7 @@ namespace Arise.FileSyncer.Core
             return message != null
                 && (Verified
                     || message.MessageType == NetMessageType.VerificationData
+                    || message.MessageType == NetMessageType.VerificationResponse
                     || message.MessageType == NetMessageType.IsAlive
                     || message.MessageType == NetMessageType.PairingRequest
                     || message.MessageType == NetMessageType.PairingResponse

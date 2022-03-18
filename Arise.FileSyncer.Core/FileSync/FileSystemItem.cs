@@ -32,7 +32,7 @@ namespace Arise.FileSyncer.Core.FileSync
             else
             {
                 FileSize = 0;
-                LastWriteTime = new DateTime();
+                LastWriteTime = new DateTime(0, DateTimeKind.Utc);
             }
         }
 
