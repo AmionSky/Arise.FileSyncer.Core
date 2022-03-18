@@ -49,7 +49,7 @@ namespace Arise.FileSyncer.Core.Peer
         /// <summary>
         /// Snapshot of the current keys and values
         /// </summary>
-        public KeyValuePair<Guid,Guid>[] Snapshot()
+        public KeyValuePair<Guid, Guid>[] Snapshot()
         {
             return deviceKeys.ToArray();
         }

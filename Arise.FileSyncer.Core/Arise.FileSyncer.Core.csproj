@@ -11,13 +11,18 @@
     <Company />
   </PropertyGroup>
 
+  <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arise.FileSyncer.Log" Version="1.0.2" />
-    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.1.2" />
+    <PackageReference Include="Arise.FileSyncer.Log" Version="1.1.0" />
+    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.2.0" />
     <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
   </ItemGroup>
 

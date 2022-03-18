@@ -19,7 +19,7 @@ namespace Arise.FileSyncer.Core.Components
                 SingleWriter = singleWriter,
                 SingleReader = true
             });
-            
+
             task = Work();
         }
 
