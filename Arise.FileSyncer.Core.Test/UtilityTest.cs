@@ -82,13 +82,13 @@ namespace Arise.FileSyncer.Core.Test
             FileInfo fileInfo = new(filePath);
             fileInfo.Refresh();
 
-            Assert.AreNotEqual(targetDate, fileInfo.CreationTime);
-            Assert.AreNotEqual(targetDate, fileInfo.LastWriteTime);
+            Assert.AreNotEqual(targetDate, fileInfo.CreationTimeUtc);
+            Assert.AreNotEqual(targetDate, fileInfo.LastWriteTimeUtc);
             Assert.IsTrue(Utility.FileSetTime(Root, "set time.test", targetDate, targetDate));
 
             fileInfo.Refresh();
-            Assert.AreEqual(targetDate, fileInfo.CreationTime.ToUniversalTime());
-            Assert.AreEqual(targetDate, fileInfo.LastWriteTime.ToUniversalTime());
+            Assert.AreEqual(targetDate, fileInfo.CreationTimeUtc);
+            Assert.AreEqual(targetDate, fileInfo.LastWriteTimeUtc);
         }
 
         [TestMethod]

@@ -118,8 +118,8 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 FileInfo fileInfo = new(path)
                 {
-                    CreationTime = creationTime.ToLocalTime(),
-                    LastWriteTime = lastWriteTime.ToLocalTime()
+                    CreationTime = creationTime,
+                    LastWriteTime = lastWriteTime
                 };
                 return true;
             }
