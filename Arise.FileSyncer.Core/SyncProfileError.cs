@@ -1,4 +1,4 @@
-﻿namespace Arise.FileSyncer.Core
+namespace Arise.FileSyncer.Core
 {
     public enum SyncProfileError
     {
