@@ -151,8 +151,8 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 FileId = fileId,
                 Success = !hadError,
-                LastWriteTime = sendInfo.File.LastWriteTime,
-                CreationTime = sendInfo.File.CreationTime,
+                LastWriteTime = sendInfo.File.LastWriteTime.ToUniversalTime(),
+                CreationTime = sendInfo.File.CreationTime.ToUniversalTime(),
             });
 
             //Call finished callback

@@ -118,8 +118,8 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 FileInfo fileInfo = new(path)
                 {
-                    CreationTime = creationTime,
-                    LastWriteTime = lastWriteTime
+                    CreationTime = creationTime.ToLocalTime(),
+                    LastWriteTime = lastWriteTime.ToLocalTime()
                 };
                 return true;
             }
@@ -223,7 +223,7 @@ namespace Arise.FileSyncer.Core.FileSync
                     string relativePath = Path.GetRelativePath(rootPath, fsItem.FullName);
                     bool isDirectory = fsItem.Attributes.HasFlag(FileAttributes.Directory);
                     long size = isDirectory ? 0 : new FileInfo(fsItem.FullName).Length;
-                    fsItemList.Add(new FileSystemItem(isDirectory, relativePath, size, fsItem.LastWriteTime));
+                    fsItemList.Add(new FileSystemItem(isDirectory, relativePath, size, fsItem.LastWriteTime.ToUniversalTime()));
                 }
             }
             catch (Exception ex)

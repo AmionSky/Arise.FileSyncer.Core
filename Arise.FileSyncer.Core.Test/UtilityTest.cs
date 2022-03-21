@@ -72,7 +72,7 @@ namespace Arise.FileSyncer.Core.Test
         public void TestFileSetTime()
         {
             var filePath = Path.Combine(Root, "set time.test");
-            var targetDate = new DateTime(1990, 7, 21, 14, 55, 18);
+            var targetDate = new DateTime(1990, 7, 21, 14, 55, 18, DateTimeKind.Utc);
 
             if (File.Exists(filePath)) File.Delete(filePath);
             File.Create(filePath).Dispose();
@@ -87,8 +87,8 @@ namespace Arise.FileSyncer.Core.Test
             Assert.IsTrue(Utility.FileSetTime(Root, "set time.test", targetDate, targetDate));
 
             fileInfo.Refresh();
-            Assert.AreEqual(targetDate, fileInfo.CreationTime);
-            Assert.AreEqual(targetDate, fileInfo.LastWriteTime);
+            Assert.AreEqual(targetDate, fileInfo.CreationTime.ToUniversalTime());
+            Assert.AreEqual(targetDate, fileInfo.LastWriteTime.ToUniversalTime());
         }
 
         [TestMethod]

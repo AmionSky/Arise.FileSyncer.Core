@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Arise.FileSyncer.Serializer;
 
@@ -6,33 +7,40 @@ namespace Arise.FileSyncer.Core.FileSync
 {
     public struct FileSystemItem : IBinarySerializable
     {
-        public bool IsDirectory;
-        public string RelativePath;
-        public long FileSize;
-        public DateTime LastWriteTime;
+        public bool IsDirectory { get => isDirectory; }
+        public string RelativePath { get => relativePath; }
+        public long FileSize { get => fileSize; }
+        public DateTime LastWriteTime { get => lastWriteTime; }
+
+        private bool isDirectory;
+        private string relativePath;
+        private long fileSize;
+        private DateTime lastWriteTime;
 
         public FileSystemItem(bool isDirectory, string relativePath, long fileSize, DateTime lastWriteTime)
         {
-            IsDirectory = isDirectory;
-            RelativePath = relativePath;
-            FileSize = fileSize;
-            LastWriteTime = lastWriteTime;
+            Debug.Assert(lastWriteTime.Kind == DateTimeKind.Utc);
+
+            this.isDirectory = isDirectory;
+            this.relativePath = relativePath;
+            this.fileSize = fileSize;
+            this.lastWriteTime = lastWriteTime;
         }
 
         public void Deserialize(Stream stream)
         {
-            IsDirectory = stream.ReadBoolean();
-            RelativePath = stream.ReadString();
+            isDirectory = stream.ReadBoolean();
+            relativePath = stream.ReadString();
 
             if (!IsDirectory)
             {
-                FileSize = stream.ReadInt64();
-                LastWriteTime = stream.ReadDateTime();
+                fileSize = stream.ReadInt64();
+                lastWriteTime = stream.ReadDateTime();
             }
             else
             {
-                FileSize = 0;
-                LastWriteTime = new DateTime(0, DateTimeKind.Utc);
+                fileSize = 0;
+                lastWriteTime = new DateTime(0, DateTimeKind.Utc);
             }
         }
 
