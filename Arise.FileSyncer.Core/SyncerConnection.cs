@@ -41,13 +41,15 @@ namespace Arise.FileSyncer.Core
         public bool Verified { get => _verified; set => _verified = value; }
         private volatile bool _verified = false;
 
+        public bool Pairing { get => _pairing; set => _pairing = value; }
+        private volatile bool _pairing = false;
+
         public bool SupportTimestamp { get => _supportTimestamp; set => _supportTimestamp = value; }
         private volatile bool _supportTimestamp = false;
 
         public string DisplayName { get => _displayName; set => _displayName = value; }
         private volatile string _displayName = "Unknown";
 
-        private readonly Lazy<PairingSupport> pairingSupport;
         private readonly Lazy<FileSender> fileSender;
         private readonly NetMessageHandler messageHandler;
         private readonly ProgressChecker progressChecker;
@@ -58,7 +60,6 @@ namespace Arise.FileSyncer.Core
             Owner = owner;
             Progress = new ProgressCounter();
 
-            pairingSupport = new Lazy<PairingSupport>();
             fileSender = new Lazy<FileSender>(() => new FileSender(this));
             messageHandler = new NetMessageHandler(connection, MessageReceived, Disconnect);
             progressChecker = new ProgressChecker(Progress, ProgressTimeout, Owner.Settings.ProgressTimeout);
@@ -99,7 +100,7 @@ namespace Arise.FileSyncer.Core
             if (!Verified)
             {
                 Log.Verbose("Sending pairing request");
-                pairingSupport.Value.Accept = true;
+                Pairing = true;
                 Send(new PairingRequestMessage(Owner.Settings.DisplayName));
             }
         }
@@ -114,11 +115,6 @@ namespace Arise.FileSyncer.Core
             messageHandler.SendAndDisconnect(message);
         }
 
-        public Lazy<PairingSupport> GetPairingSupport()
-        {
-            return pairingSupport;
-        }
-
         internal void OnChunkRequest()
         {
             if (fileSender.IsValueCreated) fileSender.Value.ChunkRequest();
@@ -129,11 +125,9 @@ namespace Arise.FileSyncer.Core
         {
             if (accepted)
             {
-                DateTime now = DateTime.UtcNow;
-                pairingSupport.Value.GenTime = now;
                 Guid rawKey = Guid.NewGuid();
                 AddDeviceKey(GetRemoteDeviceId(), rawKey);
-                Send(PairingResponseMessage.Accept(rawKey, now));
+                Send(PairingResponseMessage.Accept(rawKey));
                 VerificationDataMessage.Send(this);
             }
             else
