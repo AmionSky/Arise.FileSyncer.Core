@@ -118,7 +118,7 @@ namespace Arise.FileSyncer.Core
             allowSend = stream.ReadBoolean();
             allowReceive = stream.ReadBoolean();
             allowDelete = stream.ReadBoolean();
-            lastSyncDate = stream.ReadDateTime().Ticks;
+            lastSyncDate = stream.ReadInt64();
             creationDate = stream.ReadDateTime();
             skipHidden = stream.ReadBoolean();
             rootDirectory = stream.ReadString();
@@ -132,7 +132,7 @@ namespace Arise.FileSyncer.Core
             stream.WriteAFS(AllowSend);
             stream.WriteAFS(AllowReceive);
             stream.WriteAFS(AllowDelete);
-            stream.WriteAFS(LastSyncDate);
+            stream.WriteAFS(lastSyncDate);
             stream.WriteAFS(CreationDate);
             stream.WriteAFS(SkipHidden);
             stream.WriteAFS(RootDirectory);
