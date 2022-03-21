@@ -40,10 +40,9 @@ namespace Arise.FileSyncer.Core.FileSync
                         {
                             if (supportTimestamp)
                             {
-                                double timeDiff = (localItem.LastWriteTime - remoteItem.LastWriteTime).TotalSeconds;
-                                if (preferLocal) timeDiff = Math.Abs(timeDiff);
+                                double timeDiff = Math.Abs((localItem.LastWriteTime - remoteItem.LastWriteTime).TotalSeconds);
 
-                                if (timeDiff > 1.0)
+                                if (timeDiff > 2.0)
                                 {
                                     RemoteMissingFiles.Add(relativeName);
                                 }
