@@ -16,21 +16,25 @@ namespace Arise.FileSyncer.Core.Messages
         public static void Send(SyncerConnection connection)
         {
             var deviceKeys = connection.Owner.DeviceKeys;
+            var deviceId = connection.Owner.Settings.DeviceId;
+            var remoteDeviceId = connection.GetRemoteDeviceId();
 
-            if (deviceKeys.GetVerificationKey(connection.GetRemoteDeviceId(), out Guid key))
+            if (deviceKeys.GetVerificationKey(remoteDeviceId, out Guid key))
             {
-                var settings = connection.Owner.Settings;
-
                 VerificationDataMessage message = new()
                 {
-                    Key = Security.KeyGenerator(key, settings.DeviceId)
+                    Key = Security.KeyGenerator(key, deviceId)
                 };
 
                 connection.Send(message);
             }
             else if (connection.Owner.AllowPairing)
             {
-                connection.Pair();
+                // TODO proper paring
+                if (remoteDeviceId.ToString().CompareTo(deviceId.ToString()) > 0)
+                {
+                    connection.Pair();
+                }
             }
             else
             {

@@ -16,6 +16,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public static PairingResponseMessage Accept(Guid rawKey)
         {
+            Log.Verbose("Accepting Pairing Request");
             return new PairingResponseMessage()
             {
                 Accepted = true,
@@ -25,11 +26,14 @@ namespace Arise.FileSyncer.Core.Messages
 
         public static PairingResponseMessage Refuse()
         {
+            Log.Verbose("Refusing Pairing Request");
             return new PairingResponseMessage() { Accepted = false };
         }
 
         public override void Process(SyncerConnection con)
         {
+            Log.Verbose("Processing Pairing Response");
+
             if (Accepted && con.Pairing)
             {
                 con.AddDeviceKey(con.GetRemoteDeviceId(), RawKey);

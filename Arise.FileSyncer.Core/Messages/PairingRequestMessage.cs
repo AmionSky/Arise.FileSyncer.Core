@@ -18,6 +18,8 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Process(SyncerConnection con)
         {
+            Log.Verbose("Processing Pairing Request");
+
             if (!con.Verified && con.Owner.AllowPairing)
             {
                 con.Owner.OnPairingRequest(new PairingRequestEventArgs(
