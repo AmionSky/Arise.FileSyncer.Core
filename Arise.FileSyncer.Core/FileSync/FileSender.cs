@@ -10,8 +10,8 @@ namespace Arise.FileSyncer.Core.FileSync
     internal class FileSender : IDisposable
     {
         private readonly SyncerConnection owner;
-
         private readonly ChannelWorker<FileSendInfo> sender;
+
         private AutoResetEvent chunkRequestEvent;
         private int chunkCount;
         private int senderLength = 0;
@@ -31,8 +31,8 @@ namespace Arise.FileSyncer.Core.FileSync
 
             foreach (FileSendInfo sendInfo in sendInfos)
             {
-                overallSize += sendInfo.File.Length;
-                owner.Progress.AddMaximum(sendInfo.File.Length);
+                overallSize += sendInfo.Size;
+                owner.Progress.AddMaximum(sendInfo.Size);
                 Enqueue(sendInfo);
             }
 
@@ -41,8 +41,8 @@ namespace Arise.FileSyncer.Core.FileSync
 
         public void AddFile(FileSendInfo sendInfo)
         {
-            owner.Send(new FileSizeMessage(sendInfo.File.Length));
-            owner.Progress.AddMaximum(sendInfo.File.Length);
+            owner.Send(new FileSizeMessage(sendInfo.Size));
+            owner.Progress.AddMaximum(sendInfo.Size);
             Enqueue(sendInfo);
         }
 
@@ -67,7 +67,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private void SendFileByChunks(FileSendInfo sendInfo)
         {
-            Log.Info($"Sending: {sendInfo.File.FullName}");
+            Log.Info($"Sending: {sendInfo.RelativePath}"); // TODO: change to full path again?
 
             //Generate a unique file ID
             Guid fileId = Guid.NewGuid();
@@ -79,7 +79,7 @@ namespace Arise.FileSyncer.Core.FileSync
                 ProfileId = sendInfo.ProfileId,
                 ProfileKey = sendInfo.ProfileKey,
                 RelativePath = sendInfo.RelativePath,
-                FileSize = sendInfo.File.Length,
+                FileSize = sendInfo.Size,
             });
 
             //Init vars
@@ -88,17 +88,8 @@ namespace Arise.FileSyncer.Core.FileSync
             byte[] buffer = new byte[owner.Owner.Settings.BufferSize];
             bool hadError = false;
 
-            string pathRelative = sendInfo.RelativePath;
-            string pathRoot = sendInfo.RootPath;
-
-            if (!string.Equals(Path.Combine(pathRoot, pathRelative), sendInfo.File.FullName, StringComparison.Ordinal))
-            {
-                pathRoot = string.Empty;
-                pathRelative = sendInfo.File.FullName;
-            }
-
             //Create file stream
-            Stream fileStream = Utility.FileCreateReadStream(pathRoot, pathRelative);
+            Stream fileStream = Utility.FileCreateReadStream(sendInfo.RootPath, sendInfo.RelativePath);
             if (fileStream == null) hadError = true;
 
             if (!hadError)
@@ -129,7 +120,7 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 Log.Warning($"{this}: Removed progress: File send error!");
                 owner.Progress.RemoveProgress(allBytesRead);
-                owner.Progress.RemoveMaximum(sendInfo.File.Length);
+                owner.Progress.RemoveMaximum(sendInfo.Size);
             }
             else
             {
@@ -151,8 +142,8 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 FileId = fileId,
                 Success = !hadError,
-                LastWriteTime = sendInfo.File.LastWriteTimeUtc,
-                CreationTime = sendInfo.File.CreationTimeUtc,
+                LastWriteTime = sendInfo.LastWriteTime.ToUniversalTime(),
+                CreationTime = sendInfo.CreationTime.ToUniversalTime(),
             });
 
             //Call finished callback

@@ -172,7 +172,7 @@ namespace Arise.FileSyncer.Core
 
             // Send
             Send(new CreateDirectoriesMessage(remoteProfile.Id, localProfile, delta.RemoteMissingDirectories));
-            fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, delta.RemoteMissingFiles, null));
+            fileSender.Value.AddFiles(FileSendInfo.Create(remoteProfile.Id, localProfile, delta.RemoteMissingFiles));
 
             // Update last sync date
             localProfile.UpdateLastSyncDate(Owner.Profiles, remoteProfile.Id);

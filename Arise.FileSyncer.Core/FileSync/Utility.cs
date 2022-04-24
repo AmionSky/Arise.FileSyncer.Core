@@ -18,6 +18,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public delegate Stream DelegateFileCreateWriteStream(string rootPath, string relativePath, FileMode fileMode);
         public delegate Stream DelegateFileCreateReadStream(string rootPath, string relativePath);
         public delegate FileSystemItem[] DelegateGenerateTree(string rootPath, bool skipHidden);
+        public delegate (long, DateTime, DateTime)? DelegateFileInfo(string rootPath, string relativePath);
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         /// <summary>
@@ -62,6 +63,11 @@ namespace Arise.FileSyncer.Core.FileSync
         /// Generates a directory tree including all the folders and files from the root directory and sub directories
         /// </summary>
         public static DelegateGenerateTree GenerateTree = DefaultGenerateTree;
+        /// <summary>
+        /// Retrieves the file's size, last write time and creation time.
+        /// </summary>
+        /// <returns>File's (Size, LastWriteTime, CreationTime) or null on failure</returns>
+        public static DelegateFileInfo FileInfo = (r, p) => DefaultFileInfo(Path.Combine(r, p));
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
         private const string LogName = nameof(Utility);
@@ -233,6 +239,27 @@ namespace Arise.FileSyncer.Core.FileSync
             }
 
             return fsItemList.ToArray();
+        }
+
+        private static (long, DateTime, DateTime)? DefaultFileInfo(string path)
+        {
+            FileInfo fileInfo;
+            try { fileInfo = new FileInfo(path); }
+            catch
+            {
+                Log.Warning($"{LogName}: Failed to get info for file: {path}");
+                return null;
+            }
+
+            if (fileInfo.Exists)
+            {
+                return (fileInfo.Length, fileInfo.LastWriteTimeUtc, fileInfo.CreationTimeUtc);
+            }
+            else
+            {
+                Log.Warning($"{LogName}: File does not exist: {path}");
+                return null;
+            }
         }
 
         #endregion
