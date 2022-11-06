@@ -5,7 +5,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
-    internal class SyncProfileState : IBinarySerializable
+    internal sealed class SyncProfileState : IBinarySerializable
     {
         public Guid Id;
         public Guid Key;

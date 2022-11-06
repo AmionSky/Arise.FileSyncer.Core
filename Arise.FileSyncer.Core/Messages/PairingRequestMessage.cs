@@ -3,7 +3,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class PairingRequestMessage : NetMessage
+    internal sealed class PairingRequestMessage : NetMessage
     {
         public string DisplayName { get; set; }
 

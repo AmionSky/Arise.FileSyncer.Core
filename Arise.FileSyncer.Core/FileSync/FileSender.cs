@@ -7,7 +7,7 @@ using Arise.FileSyncer.Core.Messages;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
-    internal class FileSender : IDisposable
+    internal sealed class FileSender : IDisposable
     {
         private readonly SyncerConnection owner;
         private readonly ChannelWorker<FileSendInfo> sender;
@@ -175,7 +175,7 @@ namespace Arise.FileSyncer.Core.FileSync
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed)
             {

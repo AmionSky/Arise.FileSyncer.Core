@@ -3,7 +3,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class FileSizeMessage : NetMessage
+    internal sealed class FileSizeMessage : NetMessage
     {
         public long OverallSendSize { get; set; }
 

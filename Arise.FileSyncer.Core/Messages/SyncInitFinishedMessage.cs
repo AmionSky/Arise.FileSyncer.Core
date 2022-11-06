@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class SyncInitFinishedMessage : NetMessage
+    internal sealed class SyncInitFinishedMessage : NetMessage
     {
         public override NetMessageType MessageType => NetMessageType.SyncInitFinished;
 

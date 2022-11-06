@@ -10,7 +10,7 @@ namespace Arise.FileSyncer.Core
     /// <summary>
     /// Core of the syncer. Stores connections, profiles and handles communication.
     /// </summary>
-    public class SyncerPeer : IDisposable
+    public sealed class SyncerPeer : IDisposable
     {
         /// <summary>
         /// Called when received a pairing request from a remote device.
@@ -159,17 +159,17 @@ namespace Arise.FileSyncer.Core
             return fileBuilder.Value;
         }
 
-        internal virtual void OnPairingRequest(PairingRequestEventArgs e)
+        internal void OnPairingRequest(PairingRequestEventArgs e)
         {
             PairingRequest?.Invoke(this, e);
         }
 
-        internal virtual void OnNewPairAdded(NewPairAddedEventArgs e)
+        internal void OnNewPairAdded(NewPairAddedEventArgs e)
         {
             NewPairAdded?.Invoke(this, e);
         }
 
-        internal virtual void OnFileBuilt(FileBuiltEventArgs e)
+        internal void OnFileBuilt(FileBuiltEventArgs e)
         {
             Task.Run(() => FileBuilt?.Invoke(this, e));
         }
@@ -177,7 +177,7 @@ namespace Arise.FileSyncer.Core
         #region IDisposable Support
         private bool disposedValue;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

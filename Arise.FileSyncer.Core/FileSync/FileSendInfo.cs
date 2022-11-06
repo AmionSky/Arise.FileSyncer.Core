@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
-    public class FileSendInfo
+    public sealed class FileSendInfo
     {
         public Guid ProfileId { get; private set; }
         public Guid ProfileKey { get; private set; }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class ProfileManager
+    public sealed class ProfileManager
     {
         /// <summary>
         /// Called when a profile got changed or updated.
@@ -142,7 +142,7 @@ namespace Arise.FileSyncer.Core.Peer
             });
         }
 
-        internal virtual void OnProfileChanged(Guid profileId, SyncProfile profile)
+        internal void OnProfileChanged(Guid profileId, SyncProfile profile)
         {
             ProfileChanged?.Invoke(this, new ProfileEventArgs()
             {
@@ -151,7 +151,7 @@ namespace Arise.FileSyncer.Core.Peer
             });
         }
 
-        internal virtual void OnProfileError(Guid profileId, SyncProfile profile, SyncProfileError error)
+        internal void OnProfileError(Guid profileId, SyncProfile profile, SyncProfileError error)
         {
             ProfileError?.Invoke(this, new ProfileErrorEventArgs()
             {
@@ -161,7 +161,7 @@ namespace Arise.FileSyncer.Core.Peer
             });
         }
 
-        internal virtual void OnProfileReceived(ProfileReceivedEventArgs e)
+        internal void OnProfileReceived(ProfileReceivedEventArgs e)
         {
             ProfileReceived?.Invoke(this, e);
         }

@@ -7,7 +7,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class DeleteDirectoriesMessage : NetMessage
+    internal sealed class DeleteDirectoriesMessage : NetMessage
     {
         public Guid ProfileId { get; set; }
         public Guid Key { get; set; }

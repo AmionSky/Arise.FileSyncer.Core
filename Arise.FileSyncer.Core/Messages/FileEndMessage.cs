@@ -4,7 +4,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class FileEndMessage : FileMessageBase
+    internal sealed class FileEndMessage : FileMessageBase
     {
         public bool Success { get; set; }
         public DateTime LastWriteTime { get; set; }

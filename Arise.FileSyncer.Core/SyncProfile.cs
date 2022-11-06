@@ -7,7 +7,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
-    public class SyncProfile : IBinarySerializable
+    public sealed class SyncProfile : IBinarySerializable
     {
         /// <summary>
         /// Profile verification key

@@ -33,7 +33,7 @@ namespace Arise.FileSyncer.Core
         bool IsSyncing();
     }
 
-    internal class SyncerConnection : ISyncerConnection, IDisposable
+    internal sealed class SyncerConnection : ISyncerConnection, IDisposable
     {
         public SyncerPeer Owner { get; }
         public ProgressCounter Progress { get; }
@@ -205,7 +205,7 @@ namespace Arise.FileSyncer.Core
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -227,7 +227,7 @@ namespace Arise.FileSyncer.Core
 
         public void Dispose()
         {
-            Dispose(true);
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
         #endregion

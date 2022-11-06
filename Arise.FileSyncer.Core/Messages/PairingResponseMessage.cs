@@ -5,7 +5,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class PairingResponseMessage : NetMessage
+    internal sealed class PairingResponseMessage : NetMessage
     {
         public bool Accepted { get; set; }
         public Guid RawKey { get; set; }

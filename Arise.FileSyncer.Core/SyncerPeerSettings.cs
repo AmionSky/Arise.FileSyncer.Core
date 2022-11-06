@@ -4,7 +4,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core
 {
-    public class SyncerPeerSettings : IBinarySerializable
+    public sealed class SyncerPeerSettings : IBinarySerializable
     {
         private Guid deviceId;
         private bool supportTimestamp;

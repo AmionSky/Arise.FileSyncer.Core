@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class ConnectionManager : IDisposable
+    public sealed class ConnectionManager : IDisposable
     {
         /// <summary>
         /// Called when a new connection is successfully added.
@@ -136,7 +136,7 @@ namespace Arise.FileSyncer.Core.Peer
         #region IDisposable Support
         private bool disposedValue;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

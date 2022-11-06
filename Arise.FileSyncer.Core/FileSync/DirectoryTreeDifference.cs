@@ -4,7 +4,7 @@ using Arise.FileSyncer.Core.Helpers;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
-    public class DirectoryTreeDifference
+    public sealed class DirectoryTreeDifference
     {
         public List<string> RemoteMissingFiles { get; private set; }
         public List<string> RemoteMissingDirectories { get; private set; }

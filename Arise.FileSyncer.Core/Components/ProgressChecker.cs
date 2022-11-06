@@ -7,7 +7,7 @@ namespace Arise.FileSyncer.Core.Components
     /// Periodically checks the progress of the connection.
     /// Issues a timeout if no progress was made between 2 checks.
     /// </summary>
-    internal class ProgressChecker : IDisposable
+    internal sealed class ProgressChecker : IDisposable
     {
         private readonly Timer checkerTimer;
         private readonly Action onTimeout;
@@ -52,7 +52,7 @@ namespace Arise.FileSyncer.Core.Components
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

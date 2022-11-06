@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Arise.FileSyncer.Core
 {
-    public class ProgressCounter : ISyncProgress
+    public sealed class ProgressCounter : ISyncProgress
     {
         public bool Indeterminate
         {

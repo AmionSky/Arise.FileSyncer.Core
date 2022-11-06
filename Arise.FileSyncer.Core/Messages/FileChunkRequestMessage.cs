@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class FileChunkRequestMessage : NetMessage
+    internal sealed class FileChunkRequestMessage : NetMessage
     {
         public override NetMessageType MessageType => NetMessageType.FileChunkRequest;
 

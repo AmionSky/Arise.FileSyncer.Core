@@ -9,7 +9,7 @@ using Arise.FileSyncer.Core.Messages;
 
 namespace Arise.FileSyncer.Core.FileSync
 {
-    internal class FileBuilder : IDisposable
+    internal sealed class FileBuilder : IDisposable
     {
         private class BuilderFileInfo
         {
@@ -298,7 +298,7 @@ namespace Arise.FileSyncer.Core.FileSync
         #region Dispose
         private bool disposedValue;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

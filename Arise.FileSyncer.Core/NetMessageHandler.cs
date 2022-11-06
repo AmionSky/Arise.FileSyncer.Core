@@ -6,7 +6,7 @@ using Arise.FileSyncer.Core.Components;
 
 namespace Arise.FileSyncer.Core
 {
-    internal class NetMessageHandler : IDisposable
+    internal sealed class NetMessageHandler : IDisposable
     {
         public readonly INetConnection Connection;
 
@@ -132,7 +132,7 @@ namespace Arise.FileSyncer.Core
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed)
             {

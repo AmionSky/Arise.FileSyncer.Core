@@ -21,8 +21,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arise.FileSyncer.Log" Version="1.1.0" />
-    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.2.1" />
+    <PackageReference Include="Arise.FileSyncer.Log" Version="2.0.0" />
+    <PackageReference Include="Arise.FileSyncer.Serializer" Version="1.2.2" />
     <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
   </ItemGroup>
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Arise.FileSyncer.Core.Peer
 {
-    public class DeviceKeyManager
+    public sealed class DeviceKeyManager
     {
         // (Remote Device Id, Verification Key)
         private readonly ConcurrentDictionary<Guid, Guid> deviceKeys;

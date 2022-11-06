@@ -5,7 +5,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class SyncInitializationMessage : NetMessage
+    internal sealed class SyncInitializationMessage : NetMessage
     {
         private SyncProfileState[] profileStates;
 

@@ -5,7 +5,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class VerificationDataMessage : NetMessage
+    internal sealed class VerificationDataMessage : NetMessage
     {
         public Guid Key { get; set; }
 

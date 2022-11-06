@@ -3,7 +3,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class SyncProfileMessage : NetMessage
+    internal sealed class SyncProfileMessage : NetMessage
     {
         private SyncProfileState profileState;
         private bool isResponse;

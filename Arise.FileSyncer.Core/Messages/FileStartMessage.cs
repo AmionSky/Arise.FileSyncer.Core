@@ -4,7 +4,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class FileStartMessage : FileMessageBase
+    internal sealed class FileStartMessage : FileMessageBase
     {
         public Guid ProfileId { get; set; }
         public Guid ProfileKey { get; set; }

@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class IsAliveMessage : NetMessage
+    internal sealed class IsAliveMessage : NetMessage
     {
         public override NetMessageType MessageType => NetMessageType.IsAlive;
 

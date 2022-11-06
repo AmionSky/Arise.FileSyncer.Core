@@ -7,7 +7,7 @@ namespace Arise.FileSyncer.Core.Components
     /// <summary>
     /// Periodically sends a message to check if the connection is still alive.
     /// </summary>
-    class ConnectionChecker : IDisposable
+    internal sealed class ConnectionChecker : IDisposable
     {
         private readonly Timer checkerTimer;
 
@@ -24,7 +24,7 @@ namespace Arise.FileSyncer.Core.Components
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

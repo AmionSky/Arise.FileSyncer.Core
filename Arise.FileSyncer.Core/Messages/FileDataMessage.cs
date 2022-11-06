@@ -3,7 +3,7 @@ using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
 {
-    internal class FileDataMessage : FileMessageBase
+    internal sealed class FileDataMessage : FileMessageBase
     {
         public byte[] Chunk { get; set; }
 

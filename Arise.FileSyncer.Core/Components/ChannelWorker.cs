@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Arise.FileSyncer.Core.Components
 {
-    public class ChannelWorker<T>
+    public sealed class ChannelWorker<T>
     {
         private readonly Channel<T> channel;
         private readonly Action<T> job;
