@@ -27,7 +27,7 @@ namespace Arise.FileSyncer.Core.FileSync
         /// Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.
         /// </summary>
-        public Action<FileSendInfo> FinishedCallback { get; private set; }
+        public Action<FileSendInfo>? FinishedCallback { get; private set; }
 
         /// <summary>
         ///
@@ -39,7 +39,7 @@ namespace Arise.FileSyncer.Core.FileSync
         /// <param name="finishedCallback">Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.</param>
         public FileSendInfo(Guid profileId, Guid profileKey, long size, DateTime lastWriteTime, DateTime creationTime,
-                            string rootPath, string relativePath, Action<FileSendInfo> finishedCallback)
+                            string rootPath, string relativePath, Action<FileSendInfo>? finishedCallback)
         {
             ProfileId = profileId;
             ProfileKey = profileKey;
@@ -62,7 +62,7 @@ namespace Arise.FileSyncer.Core.FileSync
         /// <param name="finishedCallback">Optional: Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.</param>
         /// <returns>A FileSendInfo or null if encountered an error.</returns>
-        public static FileSendInfo Create(Guid profileId, SyncProfile profile, string relativePath, Action<FileSendInfo> finishedCallback = null)
+        public static FileSendInfo Create(Guid profileId, SyncProfile profile, string relativePath, Action<FileSendInfo>? finishedCallback = null)
         {
             var fileInfo = Utility.FileInfo(profile.RootDirectory, relativePath);
 
@@ -88,7 +88,7 @@ namespace Arise.FileSyncer.Core.FileSync
         /// <param name="finishedCallback">Optional: Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.</param>
         /// <returns>A list of FileSendInfo.</returns>
-        public static List<FileSendInfo> Create(Guid profileId, SyncProfile profile, IList<string> relativePaths, Action<FileSendInfo> finishedCallback = null)
+        public static List<FileSendInfo> Create(Guid profileId, SyncProfile profile, IList<string> relativePaths, Action<FileSendInfo>? finishedCallback = null)
         {
             List<FileSendInfo> sendInfos = new();
 

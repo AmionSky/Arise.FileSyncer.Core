@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>annotations</Nullable>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Description>Core of the Syncer Service</Description>
     <PackageProjectUrl>https://github.com/arisefs/Arise.FileSyncer.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arisefs/Arise.FileSyncer.Core</RepositoryUrl>
@@ -9,11 +15,6 @@
     <Copyright>Copyright ©2021 Csányi István</Copyright>
     <Authors>Csányi István</Authors>
     <Company />
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <IsTrimmable>true</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

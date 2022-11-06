@@ -43,8 +43,13 @@ namespace Arise.FileSyncer.Core.Components
             return true;
         }
 
-        private static void CheckerCallback(object state)
+        private static void CheckerCallback(object? state)
         {
+            if (state == null)
+            {
+                throw new NullReferenceException("CheckerCallback's state was null");
+            }
+
             var checker = (ProgressChecker)state;
             if (!checker.Check()) checker.onTimeout();
         }

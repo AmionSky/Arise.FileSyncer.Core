@@ -49,7 +49,7 @@ namespace Arise.FileSyncer.Core.Components
 
             while (await reader.WaitToReadAsync())
             {
-                while (reader.TryRead(out T item))
+                while (reader.TryRead(out T? item))
                 {
                     job(item);
                 }

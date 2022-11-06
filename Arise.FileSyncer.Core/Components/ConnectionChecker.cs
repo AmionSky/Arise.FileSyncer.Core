@@ -16,8 +16,13 @@ namespace Arise.FileSyncer.Core.Components
             checkerTimer = new Timer(CheckerCallback, send, interval, interval);
         }
 
-        private static void CheckerCallback(object send)
+        private static void CheckerCallback(object? send)
         {
+            if (send == null)
+            {
+                throw new NullReferenceException("CheckerCallback's send was null");
+            }
+
             ((Action<NetMessage>)send)(new IsAliveMessage());
         }
 
