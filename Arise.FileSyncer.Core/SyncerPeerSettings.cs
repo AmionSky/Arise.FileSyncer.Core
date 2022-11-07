@@ -44,6 +44,11 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         public bool SupportTimestamp { get => supportTimestamp; init => supportTimestamp = value; }
 
+        /// <summary>
+        /// Creates a new instance with generic default values for Deserialize.
+        /// </summary>
+        public SyncerPeerSettings() : this(Guid.Empty, string.Empty, true) { }
+
         public SyncerPeerSettings(Guid deviceId, string displayName, bool supportTimestamp)
         {
             DeviceId = deviceId;
