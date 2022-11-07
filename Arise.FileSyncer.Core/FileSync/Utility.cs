@@ -15,9 +15,9 @@ namespace Arise.FileSyncer.Core.FileSync
         public delegate bool DelegateFileSetTime(string rootPath, string relativePath, DateTime lastWriteTime, DateTime creationTime);
         public delegate bool DelegateDirectoryCreate(string rootPath, string relativePath);
         public delegate bool DelegateDirectoryDelete(string rootPath, string relativePath);
-        public delegate Stream DelegateFileCreateWriteStream(string rootPath, string relativePath, FileMode fileMode);
-        public delegate Stream DelegateFileCreateReadStream(string rootPath, string relativePath);
-        public delegate FileSystemItem[] DelegateGenerateTree(string rootPath, bool skipHidden);
+        public delegate Stream? DelegateFileCreateWriteStream(string rootPath, string relativePath, FileMode fileMode);
+        public delegate Stream? DelegateFileCreateReadStream(string rootPath, string relativePath);
+        public delegate FileSystemItem[]? DelegateGenerateTree(string rootPath, bool skipHidden);
         public delegate (long, DateTime, DateTime)? DelegateFileInfo(string rootPath, string relativePath);
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible
@@ -108,7 +108,8 @@ namespace Arise.FileSyncer.Core.FileSync
         {
             try
             {
-                File.Move(path, Path.Combine(Path.GetDirectoryName(path), targetName));
+                string parentDir = Path.GetDirectoryName(path) ?? throw new Exception($"{path} does not have a parent directory");
+                File.Move(path, Path.Combine(parentDir, targetName));
                 return true;
             }
             catch
@@ -164,7 +165,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
         }
 
-        private static Stream DefaultFileCreateWriteStream(string path, FileMode fileMode)
+        private static Stream? DefaultFileCreateWriteStream(string path, FileMode fileMode)
         {
             try
             {
@@ -177,7 +178,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
         }
 
-        private static Stream DefaultFileCreateReadStream(string path)
+        private static Stream? DefaultFileCreateReadStream(string path)
         {
             try
             {
@@ -190,7 +191,7 @@ namespace Arise.FileSyncer.Core.FileSync
             }
         }
 
-        private static FileSystemItem[] DefaultGenerateTree(string rootPath, bool skipHidden)
+        private static FileSystemItem[]? DefaultGenerateTree(string rootPath, bool skipHidden)
         {
             if (!Directory.Exists(rootPath))
             {

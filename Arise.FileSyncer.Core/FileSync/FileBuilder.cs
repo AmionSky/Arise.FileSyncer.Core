@@ -36,7 +36,7 @@ namespace Arise.FileSyncer.Core.FileSync
         private readonly ChannelWorker<FileMessageBase> builder;
         private readonly ConcurrentDictionary<Guid, BuilderFileInfo> fileInfos;
 
-        private Stream writerStream = null;
+        private Stream? writerStream = null;
         private Guid WriterFileId
         {
             get
@@ -91,7 +91,7 @@ namespace Arise.FileSyncer.Core.FileSync
             WriterFileId = Guid.Empty;
         }
 
-        private void Owner_ConnectionRemoved(object sender, ConnectionEventArgs e)
+        private void Owner_ConnectionRemoved(object? sender, ConnectionEventArgs e)
         {
             List<Guid> markedForRemove = new();
 
@@ -138,7 +138,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
         private void Case_FileDataChunk(FileDataMessage message)
         {
-            if (fileInfos.TryGetValue(message.FileId, out BuilderFileInfo fileInfo))
+            if (fileInfos.TryGetValue(message.FileId, out BuilderFileInfo? fileInfo))
             {
                 bool error = false;
 
@@ -154,19 +154,24 @@ namespace Arise.FileSyncer.Core.FileSync
                 {
                     try
                     {
-                        writerStream.Write(message.Chunk, 0, message.Chunk.Length);
+                        if (writerStream != null)
+                        {
+                            writerStream.Write(message.Chunk, 0, message.Chunk.Length);
+                        }
+                        else
+                        {
+                            throw new NullReferenceException("Writer Stream is null");
+                        }
                     }
                     catch (Exception ex)
                     {
                         Log.Warning($"{this}: exception when writing. MSG: " + ex.Message);
-
                         ResetStream();
-
                         error = true;
                     }
                 }
 
-                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection iConnection))
+                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection? iConnection))
                 {
                     SyncerConnection connection = (SyncerConnection)iConnection;
                     connection.Send(new FileChunkRequestMessage());
@@ -226,7 +231,7 @@ namespace Arise.FileSyncer.Core.FileSync
         private void Case_FileInfoEnd(FileEndMessage message)
         {
             //If file info does not exist then return
-            if (!fileInfos.TryGetValue(message.FileId, out BuilderFileInfo fileInfo))
+            if (!fileInfos.TryGetValue(message.FileId, out BuilderFileInfo? fileInfo))
             {
                 Log.Warning($"{this}: Invalid file guid");
                 return;
@@ -247,7 +252,7 @@ namespace Arise.FileSyncer.Core.FileSync
             {
                 Log.Info($"{this}: Remote error in file send");
 
-                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection connection))
+                if (owner.Connections.TryGetConnection(fileInfo.RemoteDeviceId, out ISyncerConnection? connection))
                 {
                     connection.Progress.RemoveProgress(fileInfo.WrittenSize);
                     connection.Progress.RemoveMaximum(fileInfo.FileSize);

@@ -11,7 +11,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override NetMessageType MessageType => NetMessageType.SyncInitialization;
 
-        public SyncInitializationMessage() { }
+        public SyncInitializationMessage() { profileStates = Array.Empty<SyncProfileState>(); }
 
         public SyncInitializationMessage(SyncerPeer peer, Guid[] receivedIds)
         {

@@ -144,24 +144,41 @@ namespace Arise.FileSyncer.Core
 
         internal void StartProfileSync(SyncProfileState remoteProfile)
         {
-            bool exists = Owner.Profiles.GetProfile(remoteProfile.Id, out var localProfile);
+            SyncProfile localProfile;
 
-            if (!exists || !localProfile.AllowSend || localProfile.Key != remoteProfile.Key)
+            if (Owner.Profiles.GetProfile(remoteProfile.Id, out var profile))
             {
-                Log.Info("Tried to sync invalid profile: " + remoteProfile.Id);
+                localProfile = profile;
+            }
+            else
+            {
+                Log.Warning("Tried to sync non-existing profile: " + remoteProfile.Id);
                 return;
             }
 
-            FileSystemItem[] state = localProfile.GenerateState();
-            if (state == null)
+            if (!localProfile.AllowSend || localProfile.Key != remoteProfile.Key)
+            {
+                Log.Warning("Tried to sync invalid profile: " + remoteProfile.Id);
+                return;
+            }
+
+            var localState = localProfile.GenerateState();
+            if (localState == null)
             {
                 Log.Warning($"Failed to get profile state: PID:{remoteProfile.Id}");
                 return;
             }
 
+            var remoteState = remoteProfile.State;
+            if (remoteState == null)
+            {
+                Log.Warning($"Remote state is null: PID:{remoteProfile.Id}");
+                return;
+            }
+
             Log.Info("Processing Sync Profile: " + remoteProfile.Id);
 
-            var delta = new DirectoryTreeDifference(state, remoteProfile.State, SupportTimestamp);
+            var delta = new DirectoryTreeDifference(localState, remoteState, SupportTimestamp);
 
             if (remoteProfile.AllowDelete)
             {

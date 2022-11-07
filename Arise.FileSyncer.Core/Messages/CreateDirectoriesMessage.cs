@@ -15,7 +15,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override NetMessageType MessageType => NetMessageType.CreateDirectories;
 
-        public CreateDirectoriesMessage() { }
+        public CreateDirectoriesMessage() { Directories = Array.Empty<string>(); }
 
         public CreateDirectoriesMessage(Guid profileId, SyncProfile syncProfile, IList<string> directories)
         {

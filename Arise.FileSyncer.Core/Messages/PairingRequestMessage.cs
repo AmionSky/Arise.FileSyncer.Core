@@ -5,7 +5,7 @@ namespace Arise.FileSyncer.Core.Messages
 {
     internal sealed class PairingRequestMessage : NetMessage
     {
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
         public override NetMessageType MessageType => NetMessageType.PairingRequest;
 

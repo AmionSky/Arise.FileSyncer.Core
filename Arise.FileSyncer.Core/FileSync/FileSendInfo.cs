@@ -34,7 +34,6 @@ namespace Arise.FileSyncer.Core.FileSync
         /// </summary>
         /// <param name="profileId"></param>
         /// <param name="profileKey"></param>
-        /// <param name="fileInfo"></param>
         /// <param name="relativePath">Relative path from the sync profile's root directory.</param>
         /// <param name="finishedCallback">Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.</param>
@@ -58,11 +57,10 @@ namespace Arise.FileSyncer.Core.FileSync
         /// </summary>
         /// <param name="profile"></param>
         /// <param name="relativePath">Relative path from the sync profile's root directory.</param>
-        /// <param name="absolutePath">Optional: Overrides the absolute path of the file to send.</param>
         /// <param name="finishedCallback">Optional: Gets called when the file had been sent or encountured an error and was dropped from the send list.
         /// On events not related to file sending (ex: Disconnect), it does not get called.</param>
         /// <returns>A FileSendInfo or null if encountered an error.</returns>
-        public static FileSendInfo Create(Guid profileId, SyncProfile profile, string relativePath, Action<FileSendInfo>? finishedCallback = null)
+        public static FileSendInfo? Create(Guid profileId, SyncProfile profile, string relativePath, Action<FileSendInfo>? finishedCallback = null)
         {
             var fileInfo = Utility.FileInfo(profile.RootDirectory, relativePath);
 
@@ -94,7 +92,7 @@ namespace Arise.FileSyncer.Core.FileSync
 
             for (int i = 0; i < relativePaths.Count; i++)
             {
-                FileSendInfo sendInfo = Create(profileId, profile, relativePaths[i], finishedCallback);
+                FileSendInfo? sendInfo = Create(profileId, profile, relativePaths[i], finishedCallback);
                 if (sendInfo != null) sendInfos.Add(sendInfo);
             }
 

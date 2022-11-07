@@ -8,7 +8,7 @@ namespace Arise.FileSyncer.Core.Messages
     {
         public Guid ProfileId { get; set; }
         public Guid ProfileKey { get; set; }
-        public string RelativePath { get; set; }
+        public string RelativePath { get; set; } = string.Empty;
         public long FileSize { get; set; }
 
         // Non serialized

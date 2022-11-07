@@ -14,7 +14,7 @@ namespace Arise.FileSyncer.Core
         private readonly Action<NetMessage> messageReceived;
         private readonly ChannelWorker<NetMessage> sender;
 
-        private Task receiverTask = null;
+        private Task? receiverTask = null;
         private bool exitReceiver = true;
         private bool disposed = false;
 

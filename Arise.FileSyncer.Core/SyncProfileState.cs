@@ -10,11 +10,11 @@ namespace Arise.FileSyncer.Core
         public Guid Id;
         public Guid Key;
         public bool AllowDelete;
-        public FileSystemItem[] State;
+        public FileSystemItem[]? State;
 
         public SyncProfileState() { }
 
-        public SyncProfileState(Guid id, Guid key, bool allowDelete, FileSystemItem[] state)
+        public SyncProfileState(Guid id, Guid key, bool allowDelete, FileSystemItem[]? state)
         {
             Id = id;
             Key = key;
@@ -22,9 +22,9 @@ namespace Arise.FileSyncer.Core
             State = state;
         }
 
-        public static SyncProfileState Create(Guid id, SyncProfile profile)
+        public static SyncProfileState? Create(Guid id, SyncProfile profile)
         {
-            FileSystemItem[] state = profile.GenerateState();
+            FileSystemItem[]? state = profile.GenerateState();
             if (state != null)
             {
                 return new SyncProfileState(id, profile.Key, profile.AllowDelete, state);

@@ -68,7 +68,7 @@ namespace Arise.FileSyncer.Core
         public SyncProfile()
         {
             Key = Guid.Empty;
-            Name = string.Empty;
+            name = string.Empty;
             Activated = true;
             AllowSend = false;
             AllowReceive = false;
@@ -76,13 +76,13 @@ namespace Arise.FileSyncer.Core
             LastSyncDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
             SkipHidden = true;
-            RootDirectory = string.Empty;
+            rootDirectory = string.Empty;
         }
 
         public SyncProfile(SyncProfile profile)
         {
             Key = profile.Key;
-            Name = profile.Name;
+            name = profile.Name;
             Activated = profile.Activated;
             AllowSend = profile.AllowSend;
             AllowReceive = profile.AllowReceive;
@@ -90,7 +90,7 @@ namespace Arise.FileSyncer.Core
             LastSyncDate = profile.LastSyncDate;
             CreationDate = profile.CreationDate;
             SkipHidden = profile.SkipHidden;
-            RootDirectory = profile.RootDirectory;
+            rootDirectory = profile.RootDirectory;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Arise.FileSyncer.Core
         /// <summary>
         /// Generate file-system state for sync
         /// </summary>
-        internal FileSystemItem[] GenerateState()
+        internal FileSystemItem[]? GenerateState()
         {
             return Utility.GenerateTree(RootDirectory, SkipHidden);
         }

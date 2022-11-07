@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Arise.FileSyncer.Core.Peer
 {
@@ -9,23 +10,23 @@ namespace Arise.FileSyncer.Core.Peer
         /// <summary>
         /// Called when a profile got changed or updated.
         /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileChanged;
+        public event EventHandler<ProfileEventArgs>? ProfileChanged;
         /// <summary>
         /// Called when a new profile got added.
         /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileAdded;
+        public event EventHandler<ProfileEventArgs>? ProfileAdded;
         /// <summary>
         /// Called when a profile got removed.
         /// </summary>
-        public event EventHandler<ProfileEventArgs> ProfileRemoved;
+        public event EventHandler<ProfileEventArgs>? ProfileRemoved;
         /// <summary>
         /// Called when a profile encountered an error.
         /// </summary>
-        public event EventHandler<ProfileErrorEventArgs> ProfileError;
+        public event EventHandler<ProfileErrorEventArgs>? ProfileError;
         /// <summary>
         /// Called when a new profile got received from a remote device.
         /// </summary>
-        public event EventHandler<ProfileReceivedEventArgs> ProfileReceived;
+        public event EventHandler<ProfileReceivedEventArgs>? ProfileReceived;
 
         /// <summary>
         /// Collection of the currently available IDs
@@ -110,7 +111,7 @@ namespace Arise.FileSyncer.Core.Peer
         /// </summary>
         /// <param name="profileId">Profile ID</param>
         /// <param name="profile">SyncProfile</param>
-        public bool GetProfile(Guid profileId, out SyncProfile profile)
+        public bool GetProfile(Guid profileId, [NotNullWhen(returnValue: true)] out SyncProfile? profile)
         {
             return profiles.TryGetValue(profileId, out profile);
         }
@@ -126,39 +127,22 @@ namespace Arise.FileSyncer.Core.Peer
         // Events
         private void OnProfileAdded(Guid profileId, SyncProfile profile)
         {
-            ProfileAdded?.Invoke(this, new ProfileEventArgs()
-            {
-                Id = profileId,
-                Profile = profile,
-            });
+            ProfileAdded?.Invoke(this, new ProfileEventArgs(profileId, profile));
         }
 
         private void OnProfileRemoved(Guid profileId, SyncProfile profile)
         {
-            ProfileRemoved?.Invoke(this, new ProfileEventArgs()
-            {
-                Id = profileId,
-                Profile = profile,
-            });
+            ProfileRemoved?.Invoke(this, new ProfileEventArgs(profileId, profile));
         }
 
         internal void OnProfileChanged(Guid profileId, SyncProfile profile)
         {
-            ProfileChanged?.Invoke(this, new ProfileEventArgs()
-            {
-                Id = profileId,
-                Profile = profile,
-            });
+            ProfileChanged?.Invoke(this, new ProfileEventArgs(profileId, profile));
         }
 
         internal void OnProfileError(Guid profileId, SyncProfile profile, SyncProfileError error)
         {
-            ProfileError?.Invoke(this, new ProfileErrorEventArgs()
-            {
-                Id = profileId,
-                Profile = profile,
-                Error = error,
-            });
+            ProfileError?.Invoke(this, new ProfileErrorEventArgs(profileId, profile, error));
         }
 
         internal void OnProfileReceived(ProfileReceivedEventArgs e)

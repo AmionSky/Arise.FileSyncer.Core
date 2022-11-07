@@ -15,7 +15,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override NetMessageType MessageType => NetMessageType.DeleteFiles;
 
-        public DeleteFilesMessage() { }
+        public DeleteFilesMessage() { Files = Array.Empty<string>(); }
 
         public DeleteFilesMessage(Guid profileId, SyncProfile syncProfile, IList<string> files)
         {

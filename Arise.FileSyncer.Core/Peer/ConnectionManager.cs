@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Arise.FileSyncer.Core.Peer
 {
@@ -9,15 +10,15 @@ namespace Arise.FileSyncer.Core.Peer
         /// <summary>
         /// Called when a new connection is successfully added.
         /// </summary>
-        public event EventHandler<ConnectionEventArgs> ConnectionAdded;
+        public event EventHandler<ConnectionEventArgs>? ConnectionAdded;
         /// <summary>
         /// Called when a connection is successfully removed.
         /// </summary>
-        public event EventHandler<ConnectionEventArgs> ConnectionRemoved;
+        public event EventHandler<ConnectionEventArgs>? ConnectionRemoved;
         /// <summary>
         /// Called when a connection got verified and we know basic information about the remote device.
         /// </summary>
-        public event EventHandler<ConnectionVerifiedEventArgs> ConnectionVerified;
+        public event EventHandler<ConnectionVerifiedEventArgs>? ConnectionVerified;
 
         private readonly ConcurrentDictionary<Guid, SyncerConnection> connections;
 
@@ -55,15 +56,16 @@ namespace Arise.FileSyncer.Core.Peer
         /// <param name="id">The ID of the connection. (Remote Device ID)</param>
         public bool RemoveConnection(Guid id)
         {
-            bool removed = connections.TryRemove(id, out SyncerConnection syncerConnection);
-
-            if (removed)
+            if (connections.TryRemove(id, out SyncerConnection? syncerConnection))
             {
                 syncerConnection.Dispose();
                 OnConnectionRemoved(id);
+                return true;
             }
-
-            return removed;
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -107,30 +109,26 @@ namespace Arise.FileSyncer.Core.Peer
         /// </summary>
         /// <param name="id">ID of the connection</param>
         /// <param name="connection">The connection as a public interface</param>
-        public bool TryGetConnection(Guid id, out ISyncerConnection connection)
+        public bool TryGetConnection(Guid id, [NotNullWhen(returnValue: true)] out ISyncerConnection? connection)
         {
-            bool success = connections.TryGetValue(id, out SyncerConnection fullConnection);
+            bool success = connections.TryGetValue(id, out SyncerConnection? fullConnection);
             connection = fullConnection;
             return success;
         }
 
         private void OnConnectionAdded(Guid connectionId)
         {
-            ConnectionAdded?.Invoke(this, new ConnectionEventArgs() { Id = connectionId });
+            ConnectionAdded?.Invoke(this, new ConnectionEventArgs(connectionId));
         }
 
         private void OnConnectionRemoved(Guid connectionId)
         {
-            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs() { Id = connectionId });
+            ConnectionRemoved?.Invoke(this, new ConnectionEventArgs(connectionId));
         }
 
         internal void OnConnectionVerified(Guid connectionId, string displayName)
         {
-            ConnectionVerified?.Invoke(this, new ConnectionVerifiedEventArgs()
-            {
-                Id = connectionId,
-                Name = displayName,
-            });
+            ConnectionVerified?.Invoke(this, new ConnectionVerifiedEventArgs(connectionId, displayName));
         }
 
         #region IDisposable Support

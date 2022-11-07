@@ -49,7 +49,7 @@ namespace Arise.FileSyncer.Core.FileSync
         public void ChunkRequest()
         {
             Interlocked.Increment(ref chunkCount);
-            chunkRequestEvent?.Set();
+            chunkRequestEvent.Set();
         }
 
         public bool IsSendQueueEmpty()
@@ -89,10 +89,9 @@ namespace Arise.FileSyncer.Core.FileSync
             bool hadError = false;
 
             //Create file stream
-            Stream fileStream = Utility.FileCreateReadStream(sendInfo.RootPath, sendInfo.RelativePath);
-            if (fileStream == null) hadError = true;
+            Stream? fileStream = Utility.FileCreateReadStream(sendInfo.RootPath, sendInfo.RelativePath);
 
-            if (!hadError)
+            if (fileStream != null)
             {
                 //Read from file stream
                 while ((bytesRead = FileReadSafe(fileStream, ref buffer, ref hadError)) > 0)
@@ -113,6 +112,10 @@ namespace Arise.FileSyncer.Core.FileSync
                     allBytesRead += bytesRead;
                     owner.Progress.AddProgress(bytesRead);
                 }
+            }
+            else
+            {
+                hadError = true;
             }
 
             //Check for errors
@@ -183,12 +186,8 @@ namespace Arise.FileSyncer.Core.FileSync
 
                 if (disposing)
                 {
-                    if (chunkRequestEvent != null)
-                    {
-                        chunkRequestEvent.Set();
-                        chunkRequestEvent.Dispose();
-                        chunkRequestEvent = null;
-                    }
+                    chunkRequestEvent.Set();
+                    chunkRequestEvent.Dispose();
 
                     sender.Complete();
                 }

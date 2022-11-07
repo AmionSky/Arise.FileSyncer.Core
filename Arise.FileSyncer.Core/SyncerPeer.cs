@@ -16,17 +16,17 @@ namespace Arise.FileSyncer.Core
         /// Called when received a pairing request from a remote device.
         /// Containes callback to accept/refuse the request.
         /// </summary>
-        public event EventHandler<PairingRequestEventArgs> PairingRequest;
+        public event EventHandler<PairingRequestEventArgs>? PairingRequest;
 
         /// <summary>
         /// Called when a new pair has been successfully created.
         /// </summary>
-        public event EventHandler<NewPairAddedEventArgs> NewPairAdded;
+        public event EventHandler<NewPairAddedEventArgs>? NewPairAdded;
 
         /// <summary>
         /// [Async] Called when the file builder completed a file.
         /// </summary>
-        public event EventHandler<FileBuiltEventArgs> FileBuilt;
+        public event EventHandler<FileBuiltEventArgs>? FileBuilt;
 
         /// <summary>
         /// Allow sending and receiving pairing requests.
@@ -63,7 +63,7 @@ namespace Arise.FileSyncer.Core
         /// </summary>
         public SyncerPeer(SyncerPeerSettings settings, DeviceKeyManager deviceKeyManager, ProfileManager profileManager)
         {
-            Settings = settings ?? new SyncerPeerSettings();
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             AllowPairing = false;
 
             Connections = new ConnectionManager();
@@ -131,9 +131,13 @@ namespace Arise.FileSyncer.Core
 
             if (profile.AllowReceive)
             {
-                profileState = SyncProfileState.Create(profileId, profile);
+                var localState = SyncProfileState.Create(profileId, profile);
 
-                if (profileState == null)
+                if (localState != null)
+                {
+                    profileState = localState;
+                }
+                else
                 {
                     Profiles.OnProfileError(profileId, profile, SyncProfileError.FailedToGetState);
                     return false;
@@ -149,9 +153,15 @@ namespace Arise.FileSyncer.Core
 
         internal bool TrySend(Guid connectionId, NetMessage message)
         {
-            bool found = Connections.TryGetConnection(connectionId, out ISyncerConnection connection);
-            if (found) (connection as SyncerConnection).Send(message);
-            return found;
+            if (Connections.TryGetConnection(connectionId, out ISyncerConnection? connection))
+            {
+                ((SyncerConnection)connection).Send(message);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         internal FileBuilder GetFileBuilder()

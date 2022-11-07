@@ -7,11 +7,22 @@ namespace Arise.FileSyncer.Core.Messages
 {
     internal sealed class VerificationResponseMessage : NetMessage
     {
-        public bool Success { get; set; }
+        class Data
+        {
+            public string DisplayName;
+            public bool SupportTimestamp;
+            public Guid[] ProfileIds;
 
-        public string DisplayName { get; set; }
-        public bool SupportTimestamp { get; set; }
-        public Guid[] ProfileIds { get; set; }
+            public Data(string displayName, bool supportTimestamp, Guid[] profileIds)
+            {
+                DisplayName = displayName;
+                SupportTimestamp = supportTimestamp;
+                ProfileIds = profileIds;
+            }
+        }
+
+        private Data? data { get; set; }
+
 
         public override NetMessageType MessageType => NetMessageType.VerificationResponse;
 
@@ -19,26 +30,21 @@ namespace Arise.FileSyncer.Core.Messages
 
         public VerificationResponseMessage(bool success, SyncerPeer peer)
         {
-            Success = success;
-
             if (success)
             {
-                Success = success;
-                DisplayName = peer.Settings.DisplayName;
-                SupportTimestamp = peer.Settings.SupportTimestamp;
-                ProfileIds = peer.Profiles.Ids.ToArray();
+                data = new Data(peer.Settings.DisplayName, peer.Settings.SupportTimestamp, peer.Profiles.Ids.ToArray());
             }
         }
 
         public override void Process(SyncerConnection con)
         {
-            if (Success)
+            if (data != null)
             {
-                con.DisplayName = DisplayName;
-                con.SupportTimestamp = SupportTimestamp;
-                con.Owner.Connections.OnConnectionVerified(con.GetRemoteDeviceId(), DisplayName);
+                con.DisplayName = data.DisplayName;
+                con.SupportTimestamp = data.SupportTimestamp;
+                con.Owner.Connections.OnConnectionVerified(con.GetRemoteDeviceId(), data.DisplayName);
                 Log.Verbose("Sending Initialization Data");
-                con.Send(new SyncInitializationMessage(con.Owner, ProfileIds));
+                con.Send(new SyncInitializationMessage(con.Owner, data.ProfileIds));
             }
             else
             {
@@ -48,25 +54,27 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Deserialize(Stream stream)
         {
-            Success = stream.ReadBoolean();
+            bool success = stream.ReadBoolean();
 
-            if (Success)
+            if (success)
             {
-                DisplayName = stream.ReadString();
-                SupportTimestamp = stream.ReadBoolean();
-                ProfileIds = stream.ReadGuidArray();
+                var displayName = stream.ReadString();
+                var supportTimestamp = stream.ReadBoolean();
+                var profileIds = stream.ReadGuidArray();
+
+                data = new Data(displayName, supportTimestamp, profileIds);
             }
         }
 
         public override void Serialize(Stream stream)
         {
-            stream.WriteAFS(Success);
+            stream.WriteAFS(data != null);
 
-            if (Success)
+            if (data != null)
             {
-                stream.WriteAFS(DisplayName);
-                stream.WriteAFS(SupportTimestamp);
-                stream.WriteAFS(ProfileIds);
+                stream.WriteAFS(data.DisplayName);
+                stream.WriteAFS(data.SupportTimestamp);
+                stream.WriteAFS(data.ProfileIds);
             }
         }
     }

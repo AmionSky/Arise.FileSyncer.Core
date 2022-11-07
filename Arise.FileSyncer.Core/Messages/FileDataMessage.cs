@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Arise.FileSyncer.Serializer;
 
@@ -5,7 +6,7 @@ namespace Arise.FileSyncer.Core.Messages
 {
     internal sealed class FileDataMessage : FileMessageBase
     {
-        public byte[] Chunk { get; set; }
+        public byte[] Chunk { get; set; } = Array.Empty<byte>();
 
         public override NetMessageType MessageType => NetMessageType.FileData;
 

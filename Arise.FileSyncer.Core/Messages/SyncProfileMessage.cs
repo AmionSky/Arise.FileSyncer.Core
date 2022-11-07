@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Arise.FileSyncer.Serializer;
 
@@ -5,7 +6,7 @@ namespace Arise.FileSyncer.Core.Messages
 {
     internal sealed class SyncProfileMessage : NetMessage
     {
-        private SyncProfileState profileState;
+        private SyncProfileState? profileState;
         private bool isResponse;
 
         public override NetMessageType MessageType => NetMessageType.SyncProfile;
@@ -29,6 +30,12 @@ namespace Arise.FileSyncer.Core.Messages
             // TODO: Protect againts syncing the same profile multiple times at the same time
             Log.Verbose("Manual profile sync request");
 
+            if (profileState == null)
+            {
+                Log.Error("SyncProfileMessage's Profile State is null");
+                return;
+            }
+
             if (profileState.State != null)
             {
                 con.StartProfileSync(profileState);
@@ -51,7 +58,7 @@ namespace Arise.FileSyncer.Core.Messages
 
         public override void Serialize(Stream stream)
         {
-            stream.WriteAFS(profileState);
+            stream.WriteAFS(profileState ?? throw new NullReferenceException("Profile State is null"));
             stream.WriteAFS(isResponse);
         }
     }

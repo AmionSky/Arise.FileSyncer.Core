@@ -136,7 +136,7 @@ namespace Arise.FileSyncer.Core.Test
 
         private SyncerPeer CreatePeer()
         {
-            var peer = new SyncerPeer(null, null, null);
+            var peer = new SyncerPeer(new(Guid.Empty, string.Empty, true), null, null);
 
             // Add dummy IDs to paired devices to don't auto-disconnect
             peer.DeviceKeys.Add(dummyId1, Guid.Empty);

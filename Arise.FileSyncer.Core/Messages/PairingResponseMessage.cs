@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Arise.FileSyncer.Core.Components;
 using Arise.FileSyncer.Serializer;
 
 namespace Arise.FileSyncer.Core.Messages
