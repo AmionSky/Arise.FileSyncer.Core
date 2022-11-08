@@ -12,7 +12,10 @@ namespace Arise.FileSyncer.Core.Helpers
 
         private static byte[] KeyGenerator(byte[] code, byte[] salt, int length)
         {
+            // Need to maintain backwards compatibility
+#pragma warning disable SYSLIB0041 // Type or member is obsolete
             using Rfc2898DeriveBytes generator = new(code, salt, 1000);
+#pragma warning restore SYSLIB0041 // Type or member is obsolete
             return generator.GetBytes(length);
         }
     }

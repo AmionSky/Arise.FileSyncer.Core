@@ -12,7 +12,7 @@ namespace Arise.FileSyncer.Core.FileSync
         private readonly SyncerConnection owner;
         private readonly ChannelWorker<FileSendInfo> sender;
 
-        private AutoResetEvent chunkRequestEvent;
+        private readonly AutoResetEvent chunkRequestEvent;
         private int chunkCount;
         private int senderLength = 0;
 
